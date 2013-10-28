@@ -60,14 +60,20 @@ def get_county_name_by_zip(zipcode):
 
 def get_ranking_info_by_county(county_code):
     query = """
-      SELECT PACR.county_id county, PACR.incident_count incidents, PACR.rank rank, PACR.bucket bucket
-      FROM PA_COUNTY_VIOLATION_RANK PACR
-      WHERE PACR.county_id = %s
+      SELECT VC.county_id county, SUM(VS.VIOLATION_COUNT) incidents, VC.rank rank, VC.colorcode bucket 
+      FROM VIOLATIONS_BY_COUNTY VC, VIOLATION_SUMMARY VS, PWS_COUNTY PWSC
+      WHERE VS.PWSID = PWSC.PWSID
+      AND PWSC.FIPSCOUNTY = VC.COUNTY_ID
+      AND VC.county_id = %s
+      AND year(VS.YYYY_MM) >= 2012
+      GROUP BY VC.county_id, VC.rank, VC.colorcode
     """
     
     cur = connection.cursor()
     try:
+        print query
         cur.execute(query,[county_code])
+        #cur.execute(query)
         result = cur.fetchone()
         print result
         county_ranking_info = {}
@@ -90,13 +96,11 @@ def dictfetchall(cursor):
 def get_pws_details_by_county(county_code):
 
     query = """
-      SELECT PWS.PWSID pwsid, PWSNAME pws_name, CONTACTCITY contact_city , PSOURCE_LONGNAME source_long_name, RETPOPSRVD population_served
-      , STATUS pws_status , PAH.vname violation_name, PAH.cname contaminant, PAH.viomeasure contaminant_measure
-      FROM PA_H20_VIOLATION PAH, PWS
-      WHERE PAH.pwsid = PWS.PWSID
-      AND PAH.Vtype NOT IN ('MR','Other')
-      AND YEAR(PAH.comp_begin_date) >= 2012
-      AND PAH.County = %s 
+      SELECT PWSID pwsid, PWSNAME pws_name, CONTACTCITY contact_city
+      , SOURCE_NAME source_long_name, POPULATION_SERVED population_served, PWS_STATUS pws_status, VIOLATION_NAME violation_name
+      , CONTAMINANT contaminant, CONTAMINANT_MEASURE contaminant_measure
+      FROM VIOLATION_DETAILS_2012
+      WHERE COUNTY_ID = %s 
     """
     cur = connection.cursor()
     try:
