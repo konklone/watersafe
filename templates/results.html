@@ -1,8 +1,9 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<title> WaterSafe.co </title>
 		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/cardstyle.css" />
 
 		<style type="text/css">
 			.search-on-results input[type=text] {
@@ -104,9 +105,12 @@
 				</div>
 
 				
-				<div id="details">
+				<div id="wrapper">
+					<div id="columns">
 					{% for item in pws_info %}
-						<div class="item">
+						<div class="pin">
+							<div class="details">
+								<div class="item">
 							<div class="top">
 								<div class="name left">
 									<p style="font-weight:bold; font-size:14px;">{{ item.pws_name }}</p>
@@ -129,9 +133,12 @@
 									<p>Contaminant: <span class="chemical">{{ item.contaminant }}</span></p>
 								</div>
 							</div>
+							</div>
+						</div>
 						</div>
 					{% endfor %}
 					<br style="clear:both;" />
+				</div>
 				</div>
 				
 			</div>

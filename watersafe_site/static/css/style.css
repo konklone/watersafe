@@ -6,6 +6,7 @@ button a {
 body {
 	font-family: verdana, arial, sans-serif;
 	font-size: 12px;
+	background: url("/static/images/scribble_light.png") ;
 }
 
 #search-form {
