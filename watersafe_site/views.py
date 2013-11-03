@@ -5,7 +5,6 @@ from django.template import RequestContext, loader
 from datetime import timedelta, date
 import json, urllib, httplib2
 from api_keys import *
-from bs4 import BeautifulSoup
 import datamodel
 
 http = httplib2.Http()
