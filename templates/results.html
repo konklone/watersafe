@@ -30,9 +30,9 @@
 				<br />
 
 				<div class="search-on-results">
-					<form action="/results" method="post">
+					<form action="/results" method="post">{% csrf_token %}
 						<input type="text" name="address" id="address" placeholder="Type in your address..."/>
-						<input type="submit" />
+						<input type="submit" class="hows-the-water" value="How's My Water?" />
 					</form>
 				</div>
 			</div>
