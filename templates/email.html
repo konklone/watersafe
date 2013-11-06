@@ -1,0 +1,56 @@
+<DOCTYPE html>
+    <html>
+        <head>
+            <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+        </head>
+        <body>
+            
+                <div class="container">
+                   <strong> To whomsover it may concern </strong>
+                    <br>
+                    <p> The following violations has been reported in the public water systems in the county of 'COUNTY_NAME'
+                    </p>
+
+                    <div>
+                        <div id="details">
+                            {% for item in pws_info %}
+                            <div class="item">
+                                <div class="top">
+                                    <div class="name left">
+                                        <p style="font-weight:bold; font-size:14px;">
+                                            {{ item.pws_name }}
+                                        </p>
+                                    </div>
+
+         
+
+                                    <br class="clear-both" />
+                                </div>
+
+                                <div class="wrapper">
+                                    <p>
+                                        City: <span class="city">{{item.contact_city}}</span>
+                                    </p>
+                                     <div class="violations red-rating">
+                                        <p>
+                                            Violation: <span class="type">{{ item.violation_name }}</span>
+                                        </p>
+                                        <p>
+                                            Contaminant: <span class="chemical">{{ item.contaminant }}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <br style="clear:both;" />
+                        </div>
+        <strong>Thank You for looking into this matter.</strong><br>
+        Sincerely,<br>
+        H2OSafe Co.<br>
+        http://www.h2osafe.us
+                    </div>
+
+                </div>
+ 
+        </body>
+    </html>

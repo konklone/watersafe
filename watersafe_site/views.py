@@ -7,6 +7,13 @@ import json, urllib, httplib2
 from api_keys import *
 import datamodel
 import logging
+from django.core.mail.backends import console
+from django.http.response import HttpResponse
+from django.core.mail import send_mail
+from django.core.mail.message import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template.context import Context
+from django.views.decorators.csrf import csrf_exempt
 
 http = httplib2.Http()
 # Get an instance of a logger
@@ -55,6 +62,32 @@ def search_form(request):
 def LearnMore(request):
   return render_to_response('learn_more.html', context_instance=RequestContext(request))
 
+@csrf_exempt
+def SendEmail(request):
+    subject, from_email = 'Violation Message', 'h2osafeus@gmail.com'
+    to = ['vsujith@gmail.com']
+    address = '';
+    
+    if 'reqAddress' in request.POST:
+        address = request.POST['reqAddress']
+    if 'emailText' in request.POST:
+        userEmail = request.POST['emailText']
+        to.append(userEmail)
+        
+    print 'address'+userEmail
+    county_code = datamodel.get_county_code_by_address(address)
+    pws_info = datamodel.get_pws_details_by_county(county_code)
+  
+    #Get Template
+    emailTemplate     = get_template('email.html')
+    data = Context({ 'pws_info': pws_info })
+    emailContent = emailTemplate.render(data)
+    
+    msg = EmailMultiAlternatives(subject, 'Sample', from_email, to)
+    msg.attach_alternative(emailContent, "text/html")
+    msg.send()
+    return HttpResponse(str(0), content_type="text/plain")
+
 def Search(request):
   if 'address' in request.POST:
     address = request.POST['address']
@@ -94,3 +127,5 @@ def Search(request):
       'rating_button': rating_button,
       'pws_info': pws_info
   }, context_instance=RequestContext(request))
+  
+  
