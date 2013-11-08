@@ -27,7 +27,7 @@ body {
 	background: #FEFEFE;
 	border: 2px solid #FAFAFA;
 	box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
-	margin: 0 2px 15px;
+	margin: 0 2px 25px;
 	-webkit-column-break-inside: avoid;
 	-moz-column-break-inside: avoid;
 	column-break-inside: avoid;
@@ -73,6 +73,6 @@ body {
 	}
 }
 
-#columns:hover .pin:not(:hover) {
+.pin:hover .pin:not(:hover) {
 	opacity: 0.4;
 }

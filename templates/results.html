@@ -1,209 +1,219 @@
-<DOCTYPE html>
-    <html>
-        <head>
-            <title> WaterSafe.co </title>
-            <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
-            <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-            <style type="text/css">
-				.search-on-results input[type=text] {
-					width: 246px;
-					font-size: 14px;
-					padding: 5px 2px;
-					color: #353535;
-					font-style: italic;
-				}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> H2OSafe </title>
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/cardstyle.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+		<style type="text/css">
+			.search-on-results input[type=text] {
+				width: 246px;
+				font-size: 14px;
+				padding: 5px 2px;
+				color: #353535;
+				font-style: italic;
+			}
 
-				.search-on-results input[type=submit] {
+			.search-on-results input[type=submit] {
 
-				}
-            </style>
-            <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-            <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    $( "#dialog" ).dialog({ autoOpen: false });
-                    $("#emailText").hide();
-                    
-                    
-                    $('.tell-others').click(function() {
-                        console.log('hello')
-                        $('.social').slideToggle(300);
-                    });
+			}
+		</style>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#dialog").dialog({
+					autoOpen : false
+				});
+				$("#emailText").hide();
 
-                    $('#greenBtn').click(function() {
-                        $( "#dialog" ).dialog( "open" );
-                            return false;
-                    });
-                    
-                     $('#emailNotify').click(function() {
-                        if ($('#emailNotify').is(':checked')) {
-                            $("#emailText").show();
-                        } 
-                        else {
-                            $("#emailText").hide();
-                        }                        
-                    });
+				$('.tell-others').click(function() {
+					console.log('hello')
+					$('.social').slideToggle(300);
+				});
 
-                    $('#emailBtn').click(function() {
-                        $( "#dialog" ).dialog( "close" );
-                        var address = document.getElementById("reqAddress").value;
-                        var userEmail = document.getElementById("emailText").value;
-                        alert(userEmail);
-                        var reportTo = document.getElementById("reportTo").innerHtml;
-                        $.ajax({ // create an AJAX call...
-                            data: {'reqAddress': address,
-                                    'emailText': userEmail,
-                                    'reportTo': reportTo
-                            }, // get the form data
-                            type: 'post', // GET or POST
-                            url: '/sendEmail' ,// the file to call
-                            
-                            success: function(response) { // on success..
-                                alert('Email Sent');
-                                
-                            }   
-                        });
-                        return false;
-                   });
-                });
-            </script>
-        </head>
-        <body>
-            <form id="form1" action="/results" method="post">
-                <div class="container">
-                    <div class="map-view left">
-                        <div class="map-box">
-                            <iframe width="300" height="250" style='border:1px solid #ddd;' frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?q={{ address }}&ie=UTF8&iwloc=near&z=9&output=embed"></iframe>
-                        </div>
+				$('#greenBtn').click(function() {
+					$("#dialog").dialog("open");
+					return false;
+				});
 
-                        <br />
+				$('#emailNotify').click(function() {
+					if ($('#emailNotify').is(':checked')) {
+						$("#emailText").show();
+					} else {
+						$("#emailText").hide();
+					}
+				});
 
-                        <div class="search-on-results">
-                            <input type="text" name="address" id="address" placeholder="Type in your address..."/>
-                            <input type="submit" />
+				$('#emailBtn').click(function() {
+					$("#dialog").dialog("close");
+					var address = document.getElementById("reqAddress").value;
+					var userEmail = document.getElementById("emailText").value;
+					alert(userEmail);
+					var reportTo = document.getElementById("reportTo").innerHtml;
+					$.ajax({// create an AJAX call...
+						data : {
+							'reqAddress' : address,
+							'emailText' : userEmail,
+							'reportTo' : reportTo
+						}, // get the form data
+						type : 'post', // GET or POST
+						url : '/sendEmail', // the file to call
 
-                        </div>
-                    </div>
+						success : function(response) {// on success..
+							alert('Email Sent');
 
-                    <div class="detail-view right">
+						}
+					});
+					return false;
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<form id="form1" action="/results" method="post">
+			<div class="container">
+				<div class="map-view left">
+					<div class="map-box">
+						<iframe width="300" height="250" style='border:1px solid #ddd;' frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?q={{ address }}&ie=UTF8&iwloc=near&z=9&output=embed"></iframe>
+					</div>
 
-                        <div class=" {{ rating_type }} rating">
-                            <h1> {% if bucket == "G" %}
-                            GREAT!
-                            {% elif bucket == "Y" %}
-                            WARNING!
-                            {% else %}
-                            NEEDS ACTION!
-                            {% endif %} </h1>
-                            <hr />
+					<br />
 
-                            <p>
-                                <br />
-                                {% if bucket == "G" %}
-                                Your water is in great shape.
-                                {% elif bucket == "Y" %}
-                                Warning: Your water is alright but could be better.
-                                {% else %}
-                                Contact your state rep right away, you should not be drinking this water at all.
-                                {% endif %}
-                            </p>
+					<div class="search-on-results">
+						<form action="/results" method="post">
+							{% csrf_token %}
+							<input type="text" name="address" id="address" placeholder="Type in your address..."/>
+							<input type="submit" class="hows-the-water" value="How's My Water?" />
+						</form>
+					</div>
+				</div>
 
-                            <br />
-                            <div class="sharing">
-                                <div>
-                                    <button class="green-button" id="greenBtn">
-                                        {% if bucket == "G" %}
-                                        Thank Your Rep
-                                        {% else %}
-                                        Contact Rep
-                                        {% endif %}
-                                    </button>
-                                    <button class="green-button tell-others">
-                                        Tell Others to Check
-                                    </button>
-                                </div>
+				<div class="detail-view right">
 
-                                <div id="dialog" title="Send Email">
-                                    <b> Report To </b> <label id="reportTo">{{ email_id }}</label>
-                                    <br>
-                                    <input type="text" id="emailText" name="emailText" placeholder="your email address..."/>
-                                    <input type="checkbox" id="emailNotify"/>
-                                    Notify Me
-                                    
-                                    <div contenteditable="false" id="emailDiv">
-                                        {{ email_content }}
-                                    </div>
-                                    <input type="hidden" id="reqAddress" name="reqAddress" value='{{req_address}}' />
-                                    
-                                    <input type="submit" id="emailBtn" value="Send Email"/>
-                                </div>
+					<div class=" {{ rating_type }} rating">
+						<h1> {% if bucket == "G" %}
+						GREAT!
+						{% elif bucket == "Y" %}
+						WARNING!
+						{% else %}
+						NEEDS ACTION!
+						{% endif %} </h1>
+						<hr />
 
-                            </div>
+						<p>
+							<br />
+							{% if bucket == "G" %}
+							Your water is in great shape.
+							{% elif bucket == "Y" %}
+							Warning: Your water is alright but could be better.
+							{% else %}
+							Contact your state rep right away, you should not be drinking this water at all.
+							{% endif %}
+						</p>
 
-                            <div class="social" style="display:none;">
-                                <!-- AddThis Button BEGIN -->
-                                <div class="addthis_toolbox addthis_default_style ">
-                                    <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-                                    <a class="addthis_button_tweet"></a>
-                                </div>
-                                <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51aa48f2699c65f9"></script>
-                                <!-- AddThis Button END -->
-                            </div>
+						<br />
+						<div class="sharing">
+							<div>
+								<button class="green-button" id="greenBtn">
+									{% if bucket == "G" %}
+									Thank Your Rep
+									{% else %}
+									Contact Rep
+									{% endif %}
+								</button>
+								<button class="green-button tell-others">
+									Tell Others to Check
+								</button>
+							</div>
 
-                            <br class="clear-right" />
-                        </div>
+							<div id="dialog" title="Send Email">
+								<b> Report To </b><label id="reportTo">{{ email_id }}</label>
+								<br>
+								<input type="text" id="emailText" name="emailText" placeholder="your email address..."/>
+								<input type="checkbox" id="emailNotify"/>
+								Notify Me
 
-                        <br />
+								<div contenteditable="false" id="emailDiv">
+									{{ email_content }}
+								</div>
+								<input type="hidden" id="reqAddress" name="reqAddress" value='{{req_address}}' />
 
-                        <div id="total">
-                            <h2>{{ incident_count }} Total Violations</h2>
-                            <br />
-                        </div>
+								<input type="submit" id="emailBtn" class="css3button" value="Send Email"/>
+							</div>
 
-                        <div id="details">
-                            {% for item in pws_info %}
-                            <div class="item">
-                                <div class="top">
-                                    <div class="name left">
-                                        <p style="font-weight:bold; font-size:14px;">
-                                            {{ item.pws_name }}
-                                        </p>
-                                    </div>
+						</div>
 
-                                    <div class="active-type right">
-                                        <p class="active">
-                                            {{item.pws_status}}
-                                        </p>
-                                    </div>
+						<div class="social" style="display:none;">
+							<!-- AddThis Button BEGIN -->
+							<div class="addthis_toolbox addthis_default_style ">
+								<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+								<a class="addthis_button_tweet"></a>
+							</div>
+							<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51aa48f2699c65f9"></script>
+							<!-- AddThis Button END -->
+						</div>
 
-                                    <br class="clear-both" />
-                                </div>
+						<br class="clear-right" />
+					</div>
 
-                                <div class="wrapper">
-                                    <p>
-                                        City: <span class="city">{{item.contact_city}}</span>
-                                    </p>
-                                    <p>
-                                        Population Served: <span class="served">{{item.population_served}}</span>
-                                    </p>
+					<br />
 
-                                    <div class="violations red-rating">
-                                        <p>
-                                            Violation: <span class="type">{{ item.violation_name }}</span>
-                                        </p>
-                                        <p>
-                                            Contaminant: <span class="chemical">{{ item.contaminant }}</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                            <br style="clear:both;" />
-                        </div>
+					<div id="total">
+						<h2>{{ incident_count }} Total Violations</h2>
+						<br />
+					</div>
 
-                    </div>
-                    <br class="clear-both" />
-                </div>
-            </form>
-        </body>
-    </html>
+					<div id="wrapper">
+						<div id="columns">
+							{% for item in pws_info %}
+							<div class="pin">
+								<div class="details">
+									<div class="item">
+										<div class="top">
+											<div class="name left">
+												<p style="font-weight:bold; font-size:14px;">
+													{{ item.pws_name }}
+												</p>
+											</div>
+
+											<div class="active-type right">
+												<p class="active">
+													{{item.pws_status}}
+												</p>
+											</div>
+
+											<br class="clear-both" />
+										</div>
+
+										<div class="wrapper">
+											<p>
+												City: <span class="city">{{item.contact_city}}</span>
+											</p>
+											<p>
+												Population Served: <span class="served">{{item.population_served}}</span>
+											</p>
+
+											<div class="violations red-rating">
+												<p>
+													Violation: <span class="type">{{ item.violation_name }}</span>
+												</p>
+												<p>
+													Contaminant: <span class="chemical">{{ item.contaminant }}</span>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+							<br style="clear:both;" />
+						</div>
+					</div>
+
+				</div>
+				<br class="clear-both" />
+			</div>
+		</form>
+	</body>
+</html>
