@@ -101,6 +101,12 @@ def Search(request):
   ranking_info = datamodel.get_ranking_info_by_county(county_code)
   pws_info = datamodel.get_pws_details_by_county(county_code)
 
+  email_id="vsujith@gmail.com"
+  #Get Template
+  emailTemplate     = get_template('email.html')
+  data = Context({ 'pws_info': pws_info })
+  emailContent = emailTemplate.render(data)
+  
   if ranking_info['bucket'] == "G":
     rating_type = "green-rating"
     rating_button = "green-button"
@@ -119,7 +125,10 @@ def Search(request):
       'rank': ranking_info['rank'],
       'rating_type': rating_type,
       'rating_button': rating_button,
-      'pws_info': pws_info
+      'pws_info': pws_info,
+      'email_id': email_id,
+      'email_content': emailContent,
+      'req_address' : address
   }, context_instance=RequestContext(request))
   
   
