@@ -4,9 +4,10 @@ Created on Oct 20, 2013
 @author: joekumar
 '''
 from django.db import connection
-import json, urllib, httplib2
+import json, urllib, httplib2, logging
 
 http = httplib2.Http()
+logger = logging.getLogger(__name__)
 
 def do_GET(url):
     body = {}
@@ -33,7 +34,7 @@ def get_zip_from_address(address):
 
 def get_county_code_by_address(address):
     zip = get_zip_from_address(address)
-    
+    logger.debug("zip code is " + zip)
     cur = connection.cursor()
     try:
         cur.execute('select fips_county_id from zip_county_mapping where zip=%s',[format(zip).upper()])
@@ -71,11 +72,9 @@ def get_ranking_info_by_county(county_code):
     
     cur = connection.cursor()
     try:
-        print query
         cur.execute(query,[county_code])
         #cur.execute(query)
         result = cur.fetchone()
-        print result
         county_ranking_info = {}
         county_ranking_info['county_id'] = result[0]
         county_ranking_info['incident_count'] = result[1]
@@ -98,9 +97,16 @@ def get_pws_details_by_county(county_code):
     query = """
       SELECT PWSID pwsid, PWSNAME pws_name, CONTACTCITY contact_city
       , SOURCE_NAME source_long_name, POPULATION_SERVED population_served, PWS_STATUS pws_status, VIOLATION_NAME violation_name
-      , CONTAMINANT contaminant, CONTAMINANT_MEASURE contaminant_measure
-      FROM VIOLATION_DETAILS_2012
+      , VIOLATION_DETAILS_2012.CONTAMINANT contaminant, CONTAMINANT_MEASURE contaminant_measure
+      , CONTAMINANT_EFFECTS.Health_Effect health_effect
+      , COUNT(*) CONTAMINATION_CNT
+      FROM VIOLATION_DETAILS_2012 LEFT JOIN CONTAMINANT_EFFECTS ON VIOLATION_DETAILS_2012.CONTAMINANT = CONTAMINANT_EFFECTS.Contaminant
       WHERE COUNTY_ID = %s 
+GROUP BY  PWSID , PWSNAME , CONTACTCITY 
+      , SOURCE_NAME , POPULATION_SERVED , PWS_STATUS , VIOLATION_NAME 
+      , CONTAMINANT , CONTAMINANT_MEASURE 
+ORDER BY pws_status, CONTAMINATION_CNT desc     
+
     """
     cur = connection.cursor()
     try:
@@ -108,5 +114,4 @@ def get_pws_details_by_county(county_code):
         result = dictfetchall(cur)
     finally:
         cur.close()
-    print result
     return result

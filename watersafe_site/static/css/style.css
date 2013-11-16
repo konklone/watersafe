@@ -41,6 +41,7 @@ body {
 }
 
 .map-view .map-box {
+	height: 250px;
 	padding: 10px;
 	border:1px solid #ddd;
 }
@@ -335,8 +336,6 @@ a:hover {
    background: #c75600;
 }
 
-
-
 /** added today  **/ 
 
 .search-on-results input[type=text] {
@@ -395,3 +394,16 @@ a:hover {
 	padding: 10px;
 	opacity: .7;
 }
+
+.search-on-results input[type=text] {
+	width: 246px;
+	font-size: 14px;
+	padding: 5px 2px;
+	color: #353535;
+	font-style: italic;
+}
+
+.search-on-results input[type=submit] {
+
+}
+

@@ -4,24 +4,68 @@
 		<title> H2OSafe </title>
 		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
 		<link rel="stylesheet" type="text/css" href="/static/css/cardstyle.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-		<style type="text/css">
-			.search-on-results input[type=text] {
-				width: 246px;
-				font-size: 14px;
-				padding: 5px 2px;
-				color: #353535;
-				font-style: italic;
-			}
-
-			.search-on-results input[type=submit] {
-
-			}
-		</style>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgOtSDfC2YlXdjoZvP5Goi6TpQRFZV2sw&sensor=false"></script>
+		<script src="/static/js/bootstrap.js"></script>
 		<script type="text/javascript">
+			var geocoder;
+			var map;
+
+			function codeAddress() {
+				geocoder = new google.maps.Geocoder();
+				var address = document.getElementById("reqAddress").value;
+				var mapOptions = {
+					zoom : 11,
+					mapTypeId : google.maps.MapTypeId.ROADMAP
+				}
+				map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+				
+				geocoder.geocode({
+					'address' : address
+				}, function(results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+						map.setCenter(results[0].geometry.location);
+						var marker = new google.maps.Marker({
+							map : map,
+							position : results[0].geometry.location
+						});
+					} else {
+						alert("Geocode was not successful for the following reason: " + status);
+					}
+				});
+			}
+			
+			function getPopTitle(target) {
+    			return target;
+			};
+		
+			function getPopContent(target) {
+				console.log(" target is" + target);
+				var res = $("div[id='"+target+"']").html();
+    			return res;
+			}
+
 			$(document).ready(function() {
+				
+				$(".chemical").each(function() {
+
+				 var $pElem= $(this);
+				 console.log($pElem.text());
+				$pElem.popover(
+    			{
+      				title: getPopTitle($pElem.text()),
+      				content: getPopContent($pElem.text()),
+      				trigger: "hover",
+					placement: "auto"
+    			}
+				);
+			});
+
+				
+				
 				$("#dialog").dialog({
 					autoOpen : false
 				});
@@ -70,12 +114,11 @@
 			});
 		</script>
 	</head>
-	<body>
+	<body onload="codeAddress()">
 		<form id="form1" action="/results" method="post">
 			<div class="container">
 				<div class="map-view left">
-					<div class="map-box">
-						<iframe width="300" height="250" style='border:1px solid #ddd;' frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?q={{ address }}&ie=UTF8&iwloc=near&z=9&output=embed"></iframe>
+					<div class="map-box" id="map-canvas">
 					</div>
 
 					<br />
@@ -157,63 +200,77 @@
 						<br class="clear-right" />
 					</div>
 
-					<br />
-
 					<div id="total">
 						<h2>{{ incident_count }} Total Violations</h2>
 						<br />
 					</div>
+					<div class="container">
+						<ul class="nav nav-tabs">
+							<li class="active">
+								<a href="#violations" data-toggle="tab">Violations</a>
+							</li>
+							<li class>
+								<a href="#historical" data-toggle="tab">Historical trend</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div id="historical" class="tab-pane fade in" style="width: 1019px; padding-left: 0px; ">
+								<h4> Page content</h4>
+							</div>
+							<div id="violations" class="tab-pane fade in active" style="width: 600px; padding-left: 0px; ">
+								<div id="wrapper">
+									<div id="columns">
+										{% for item in pws_info %}
+										<div class="pin" id = "pin">
+											<div class="details">
+												<div class="item">
+													<div class="top"> <span class="badge pull-right">{{item.CONTAMINATION_CNT}}</span>
+														<div class="name left">
+															<p style="font-weight:bold; font-size:14px;">
+																{{ item.pws_name }}
+															</p>
+														</div>
 
-					<div id="wrapper">
-						<div id="columns">
-							{% for item in pws_info %}
-							<div class="pin">
-								<div class="details">
-									<div class="item">
-										<div class="top">
-											<div class="name left">
-												<p style="font-weight:bold; font-size:14px;">
-													{{ item.pws_name }}
-												</p>
+														<div class="active-type right">
+															<p class="active">
+																{{item.pws_status}}
+															</p>
+														</div>
+
+														<br class="clear-both" />
+													</div>
+
+													<div class="wrapper">
+														<p>
+															City: <span class="city">{{item.contact_city}}</span>
+														</p>
+														<p>
+															Population Served: <span class="served">{{item.population_served}}</span>
+														</p>
+
+														<div class="violations red-rating">
+															<p>
+																Violation: <span class="type">{{ item.violation_name }}</span>
+															</p>
+															<p>
+																Contaminant: <div id="contaminant{{forloop.counter}}" class="chemical" ><span >{{ item.contaminant }}</span></div>
+																<div id="{{ item.contaminant }}" style="display: none" >  {{ item.health_effect }}</div>
+															</p>
+														</div>
+													</div>
+												</div>
 											</div>
-
-											<div class="active-type right">
-												<p class="active">
-													{{item.pws_status}}
-												</p>
-											</div>
-
-											<br class="clear-both" />
 										</div>
-
-										<div class="wrapper">
-											<p>
-												City: <span class="city">{{item.contact_city}}</span>
-											</p>
-											<p>
-												Population Served: <span class="served">{{item.population_served}}</span>
-											</p>
-
-											<div class="violations red-rating">
-												<p>
-													Violation: <span class="type">{{ item.violation_name }}</span>
-												</p>
-												<p>
-													Contaminant: <span class="chemical">{{ item.contaminant }}</span>
-												</p>
-											</div>
-										</div>
+										{% endfor %}
+										<br style="clear:both;" />
 									</div>
 								</div>
 							</div>
-							{% endfor %}
-							<br style="clear:both;" />
 						</div>
 					</div>
-
 				</div>
-				<br class="clear-both" />
 			</div>
+			<br class="clear-both" />
 		</form>
 	</body>
 </html>

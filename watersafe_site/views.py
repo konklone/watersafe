@@ -3,13 +3,13 @@ from datetime import timedelta, date
 from django.core.mail import send_mail
 from django.core.mail.backends import console
 from django.core.mail.message import EmailMultiAlternatives
-from django.http.response import HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext, loader
 from django.template.context import Context
 from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
-from watersafe_site import datamodel
+from watersafe_site.model import datamodel
 import httplib2
 import json
 import logging
@@ -82,11 +82,11 @@ def SendEmail(request):
     msg.send()
     return HttpResponse(str(0), content_type="text/plain")
 
+@csrf_exempt
 def Search(request):
+  clientip = get_client_ip(request)
   if 'address' in request.POST:
     address = request.POST['address']
-    clientip = get_client_ip(request)
-    logger.info("client ip " + clientip + "-" + address)
   else: 
     address = "20 N. 3rd St Philadelphia"
   
@@ -98,8 +98,10 @@ def Search(request):
   representative = contact_results['response']['results']['candidates'][0]['officials'][11]
   '''
   county_code = datamodel.get_county_code_by_address(address)
+  logger.info(county_code)
   ranking_info = datamodel.get_ranking_info_by_county(county_code)
   pws_info = datamodel.get_pws_details_by_county(county_code)
+  logger.info("client ip " + clientip + " - " + address + " - "+county_code)
 
   email_id="vsujith@gmail.com"
   #Get Template
