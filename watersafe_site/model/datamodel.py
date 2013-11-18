@@ -92,6 +92,21 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
+def get_state_historic_violations(county_code):
+    query = """
+    select vsyc.COUNTY COUNTY , vsyc.YEAR DATE_YEAR , vsyc.VIOLATIONS_COUNT VIOLATIONS_COUNT
+    from VIOLATIONS_SUMMARY_YYYY_COUNTY vsyc
+    where vsyc.STATE = 
+    (select state from county_state_mapping where fips_county_id = %s )
+    """
+    cur = connection.cursor()
+    try:
+        cur.execute(query,[county_code])
+        result = dictfetchall(cur)
+    finally:
+        cur.close()
+    return result
+    
 def get_pws_details_by_county(county_code):
 
     query = """

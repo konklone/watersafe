@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script type="text/javascript" src="http://www.google.com/jsapi"></script>		
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgOtSDfC2YlXdjoZvP5Goi6TpQRFZV2sw&sensor=false"></script>
 		<script src="/static/js/bootstrap.js"></script>
 		<script type="text/javascript">
@@ -47,6 +48,43 @@
 				var res = $("div[id='"+target+"']").html();
     			return res;
 			}
+
+			google.load('visualization', '1', {
+				packages : ['motionchart']
+			});
+
+			function drawVisualization() {
+				var countyId = document.getElementById("countyId").value;
+				console.log($("countyId").html());
+				var jsonData = $.ajax({
+					data : {
+							'countyId' : countyId,
+						}, // get the form data
+					type : 'post', // GET or POST
+					url : "/motionChart",
+					dataType : "json",
+					async : false
+				}).responseText;
+				// Create our data table out of JSON data loaded from server.
+				var data = new google.visualization.DataTable(jsonData);
+
+				var motionchart = new google.visualization.MotionChart(document.getElementById('visualization'));
+
+				var options = {};
+				options['state'] = '{"yZoomedIn":false,"iconType":"BUBBLE","yZoomedDataMax":107,"time":"1992","yAxisOption":"2","orderedByY":false,"uniColorForNonSelected":false,"sizeOption":"2","playDuration":15000,"yLambda":1,"dimensions":{"iconDimensions":["dim0"]},"xZoomedDataMin":0,"showTrails":true,"nonSelectedAlpha":0.4,"iconKeySettings":[],"yZoomedDataMin":1,"xAxisOption":"_ALPHABETICAL","duration":{"multiplier":1,"timeUnit":"Y"},"orderedByX":false,"xZoomedIn":false,"xZoomedDataMax":67,"colorOption":"2","xLambda":1}';
+				options['width'] = 800;
+				options['height'] = 400;
+				options['showSelectListComponent'] = false;
+				options['showChartButtons'] = false;
+				options['showXMetricPicker'] = false;
+				options['showYMetricPicker'] = false;
+				//options['showXScalePicker'] = false;
+				//options['showYScalePicker'] = false;
+				options['showAdvancedPanel'] = false;
+				
+				motionchart.draw(data, options);
+			}
+			google.setOnLoadCallback(drawVisualization);
 
 			$(document).ready(function() {
 				
@@ -116,6 +154,7 @@
 	</head>
 	<body onload="codeAddress()">
 		<form id="form1" action="/results" method="post">
+			<input type="hidden" id="countyId" name="countyId" value='{{county_id}}' />
 			<div class="container">
 				<div class="map-view left">
 					<div class="map-box" id="map-canvas">
@@ -181,7 +220,6 @@
 									{{ email_content }}
 								</div>
 								<input type="hidden" id="reqAddress" name="reqAddress" value='{{req_address}}' />
-
 								<input type="submit" id="emailBtn" class="css3button" value="Send Email"/>
 							</div>
 
@@ -215,7 +253,9 @@
 						</ul>
 						<div class="tab-content">
 							<div id="historical" class="tab-pane fade in" style="width: 1019px; padding-left: 0px; ">
-								<h4> Page content</h4>
+								<h4> Click play button to see a historical trend of contamination violation in your state </h4>
+								<div id="visualization" style="width: 800px; height: 400px;"></div>
+								<h6> Click on a bubble (county) to trace its history</h6>
 							</div>
 							<div id="violations" class="tab-pane fade in active" style="width: 600px; padding-left: 0px; ">
 								<div id="wrapper">
