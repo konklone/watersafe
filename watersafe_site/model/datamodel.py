@@ -97,7 +97,7 @@ def get_state_historic_violations(county_code):
     select vsyc.COUNTY COUNTY , vsyc.YEAR DATE_YEAR , vsyc.VIOLATIONS_COUNT VIOLATIONS_COUNT
     from VIOLATIONS_SUMMARY_YYYY_COUNTY vsyc
     where vsyc.STATE = 
-    (select state from county_state_mapping where fips_county_id = %s )
+    (select state from COUNTY_STATE_MAPPING where fips_county_id = %s )
     """
     cur = connection.cursor()
     try:
