@@ -114,6 +114,7 @@
 					$('.social').slideToggle(300);
 				});
 
+
 				$('#greenBtn').click(function() {
 					$("#dialog").dialog("open");
 					return false;
@@ -195,7 +196,7 @@
 						</p>
 
 						<br />
-						<div class="sharing">
+						<div class="sharing" style="display: none">
 							<div>
 								<button class="green-button" id="greenBtn">
 									{% if bucket == "G" %}
@@ -225,7 +226,7 @@
 
 						</div>
 
-						<div class="social" style="display:none;">
+						<div class="social" style="display:none;" >
 							<!-- AddThis Button BEGIN -->
 							<div class="addthis_toolbox addthis_default_style ">
 								<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
