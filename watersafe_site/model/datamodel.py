@@ -37,11 +37,14 @@ def get_county_code_by_address(address):
     logger.debug("zip code is " + zip)
     cur = connection.cursor()
     try:
-        cur.execute('select fips_county_id from ZIP_GEO_INFO where zip_code=%s',[format(zip).upper()])
-        countyCode = cur.fetchone()[0]
+        cur.execute('select fips_county_id, county, state from ZIP_GEO_INFO where zip_code=%s',[format(zip).upper()])
+        result = cur.fetchone()
+        countyCode = result[0]
+        countyName = result[1]
+        state = result[2]
     finally:
         cur.close()
-    return countyCode
+    return (countyCode,countyName,state)
     
 
 def get_ranking_info_by_county(county_code):
@@ -88,6 +91,22 @@ def get_state_historic_violations(county_code):
     finally:
         cur.close()
     return result
+
+def get_county_contaminant_historic_violations(county_code):
+    query = """
+    select vch.CNAME CONTAMINANT , CAST(YEAR(VCH.YYYY_MM) AS UNSIGNED) DATE_YEAR  , CAST( SUM(vch.VIOLATION_COUNT) AS UNSIGNED) VIOLATIONS_COUNT
+    from VIOLATION_CONTAMINANTS_HISTORICAL vch
+    where vch.COUNTYID = %s 
+    GROUP BY vch.CNAME , YEAR(VCH.YYYY_MM)
+    """
+    cur = connection.cursor()
+    try:
+        cur.execute(query,[county_code])
+        result = dictfetchall(cur)
+    finally:
+        cur.close()
+    return result
+
     
 def get_pws_details_by_county(county_code):
 

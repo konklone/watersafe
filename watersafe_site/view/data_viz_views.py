@@ -14,23 +14,33 @@ import traceback
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
-def motionChart(request):
+def historicalMotionChart(request):
     try:
-        countyid = 42089
+        chartType = request.POST['grouping']
+        logger.info('chartType ' + chartType)
         if 'countyId' in request.POST:
             countyid = request.POST['countyId']
-        datatablej = ''
-        responsejson = datamodel.get_state_historic_violations(countyid)
-        logger.info(responsejson)
-        description =       {"COUNTY": ("string", "County"),
+        datatablejson = ''
+        
+        if chartType == 'state':
+            responsejson = datamodel.get_state_historic_violations(countyid)
+            logger.info(responsejson)
+            description =       {"COUNTY": ("string", "County"),
+                               "DATE_YEAR": ("number", "Year"),
+                               "VIOLATIONS_COUNT": ("number", "# of Violations")
+                               }
+        elif chartType == 'contaminants':
+            responsejson = datamodel.get_county_contaminant_historic_violations(countyid)
+            logger.info(responsejson)
+            description =       {"CONTAMINANT": ("string", "Contaminant"),
                                "DATE_YEAR": ("number", "Year"),
                    "VIOLATIONS_COUNT": ("number", "# of Violations")
                                }
+            
         data_table = gviz_api.DataTable(description)
         data_table.LoadData(responsejson)
-        datatablej = data_table.ToJSon()
+        datatablejson = data_table.ToJSon()
     except:
         traceback.print_exc()
         
-    return HttpResponse(str(datatablej))
-
+    return HttpResponse(str(datatablejson))

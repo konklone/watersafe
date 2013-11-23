@@ -56,24 +56,28 @@
 			function drawVisualization() {
 				var countyId = document.getElementById("countyId").value;
 				console.log($("countyId").html());
+				renderHistoricalChart(countyId);
+			}
+			
+			function renderHistoricalChart(countyId){
 				var jsonData = $.ajax({
 					data : {
 							'countyId' : countyId,
+							'grouping' : 'state',
 						}, // get the form data
 					type : 'post', // GET or POST
-					url : "/motionChart",
+					url : "/historicalMotionChart",
 					dataType : "json",
 					async : false
 				}).responseText;
 				// Create our data table out of JSON data loaded from server.
-				var data = new google.visualization.DataTable(jsonData);
-
-				var motionchart = new google.visualization.MotionChart(document.getElementById('visualization'));
+				var historicalStateChartData = new google.visualization.DataTable(jsonData);
+				var historical_state_chart = new google.visualization.MotionChart(document.getElementById('historical_state'));
 
 				var options = {};
-				options['state'] = '{"yZoomedIn":false,"iconType":"BUBBLE","yZoomedDataMax":107,"time":"1992","yAxisOption":"2","orderedByY":false,"uniColorForNonSelected":false,"sizeOption":"2","playDuration":15000,"yLambda":1,"dimensions":{"iconDimensions":["dim0"]},"xZoomedDataMin":0,"showTrails":true,"nonSelectedAlpha":0.4,"iconKeySettings":[],"yZoomedDataMin":1,"xAxisOption":"_ALPHABETICAL","duration":{"multiplier":1,"timeUnit":"Y"},"orderedByX":false,"xZoomedIn":false,"xZoomedDataMax":67,"colorOption":"2","xLambda":1}';
-				options['width'] = 800;
-				options['height'] = 400;
+				options['width'] = 700;
+				options['height'] = 320;
+				options['state'] = '{"xLambda":1,"xZoomedDataMin":0,"yZoomedDataMin":1,"orderedByX":false,"nonSelectedAlpha":0.4,"orderedByY":false,"dimensions":{"iconDimensions":["dim0"]},"duration":{"multiplier":1,"timeUnit":"Y"},"yLambda":1,"xZoomedDataMax":15,"iconKeySettings":[],"showTrails":true,"yAxisOption":"2","colorOption":"_UNIQUE_COLOR","playDuration":15000,"sizeOption":"2","xAxisOption":"_ALPHABETICAL","uniColorForNonSelected":false,"yZoomedIn":false,"yZoomedDataMax":165,"time":"1997","iconType":"BUBBLE","xZoomedIn":false}';
 				options['showSelectListComponent'] = false;
 				options['showChartButtons'] = false;
 				options['showXMetricPicker'] = false;
@@ -82,7 +86,22 @@
 				//options['showYScalePicker'] = false;
 				options['showAdvancedPanel'] = false;
 				
-				motionchart.draw(data, options);
+				historical_state_chart.draw(historicalStateChartData, options);
+				
+				var jsonData = $.ajax({
+					data : {
+							'countyId' : countyId,
+							'grouping' : 'contaminants',
+						}, // get the form data
+					type : 'post', // GET or POST
+					url : "/historicalMotionChart",
+					dataType : "json",
+					async : false
+				}).responseText;
+				// Create our data table out of JSON data loaded from server.
+				var historicalContaminantChartData = new google.visualization.DataTable(jsonData);
+				var historical_contaminants_chart = new google.visualization.MotionChart(document.getElementById('historical_contaminants'));
+				historical_contaminants_chart.draw(historicalContaminantChartData, options);
 			}
 			google.setOnLoadCallback(drawVisualization);
 
@@ -254,9 +273,14 @@
 						</ul>
 						<div class="tab-content">
 							<div id="historical" class="tab-pane fade in" style="width: 1019px; padding-left: 0px; ">
-								<h4> Click play button to see a historical trend of contamination violation in your state </h4>
-								<div id="visualization" style="width: 800px; height: 400px;"></div>
+								<h4> Click play button to see a historical trend of contamination violation in {{ state }} </h4>
+								<div id="historical_state" style="width: 700px; height: 320px;"></div>
 								<h6> Click on a bubble (county) to trace its history</h6>
+								 <br/> 
+								<h4> Click play button to see a historical trend of contaminants in {{county_name}} county </h4>
+								<div id="historical_contaminants" style="width: 700px; height: 320px;"></div>
+								<h6> Click on a bubble (county) to trace its history</h6>
+
 							</div>
 							<div id="violations" class="tab-pane fade in active" style="width: 600px; padding-left: 0px; ">
 								<div id="wrapper">

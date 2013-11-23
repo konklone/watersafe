@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     ('^results$', Search),
     ('^learn_more$', LearnMore),
     ('^sendEmail$', SendEmail),    
-    url(r'^motionChart$', 'watersafe_site.view.data_viz_views.motionChart'),
+    url(r'^historicalMotionChart', 'watersafe_site.view.data_viz_views.historicalMotionChart'),
     # url(r'^$', 'watersafe.views.home', name='home'),
     # url(r'^watersafe/', include('watersafe.foo.urls')),
 
