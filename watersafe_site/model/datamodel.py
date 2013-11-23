@@ -94,10 +94,10 @@ def get_state_historic_violations(county_code):
 
 def get_county_contaminant_historic_violations(county_code):
     query = """
-    select vch.CNAME CONTAMINANT , CAST(YEAR(VCH.YYYY_MM) AS UNSIGNED) DATE_YEAR  , CAST( SUM(vch.VIOLATION_COUNT) AS UNSIGNED) VIOLATIONS_COUNT
-    from VIOLATION_CONTAMINANTS_HISTORICAL vch
-    where vch.COUNTYID = %s 
-    GROUP BY vch.CNAME , YEAR(VCH.YYYY_MM)
+    select VCH.CNAME CONTAMINANT , CAST(YEAR(VCH.YYYY_MM) AS UNSIGNED) DATE_YEAR  , CAST( SUM(VCH.VIOLATION_COUNT) AS UNSIGNED) VIOLATIONS_COUNT
+    from VIOLATION_CONTAMINANTS_HISTORICAL VCH
+    where VCH.COUNTYID = %s 
+    GROUP BY VCH.CNAME , YEAR(VCH.YYYY_MM)
     """
     cur = connection.cursor()
     try:
