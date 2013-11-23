@@ -3,7 +3,7 @@ Created on Nov 16, 2013
 
 @author: joekumar
 '''
-from django.http.response import HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from watersafe_site.model import datamodel
@@ -16,10 +16,12 @@ logger = logging.getLogger(__name__)
 @csrf_exempt
 def motionChart(request):
     try:
+        countyid = 42089
         if 'countyId' in request.POST:
             countyid = request.POST['countyId']
         datatablej = ''
         responsejson = datamodel.get_state_historic_violations(countyid)
+        logger.info(responsejson)
         description =       {"COUNTY": ("string", "County"),
                                "DATE_YEAR": ("number", "Year"),
                    "VIOLATIONS_COUNT": ("number", "# of Violations")
