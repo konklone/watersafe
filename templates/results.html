@@ -129,7 +129,7 @@
 
 			$('#tweetBtn').click(function() {
 				var url='http://twitter.com/home?status=';
-				var msg = "Please check water safety violations for address "+ "{{req_address}} at " + document.location.href +'?address=' + "{{ req_address }}";
+				var msg = "Water safety violations for address "+ "{{req_address}} at " + "{{short_url}}" ;
 				
 				// log tweet details
 				$.ajax({// create an AJAX call...

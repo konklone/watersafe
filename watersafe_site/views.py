@@ -14,6 +14,7 @@ import httplib2
 import json
 import logging
 import urllib
+import urllib2
 
 http = httplib2.Http()
 # Get an instance of a logger
@@ -115,6 +116,17 @@ def Search(request):
   ranking_info = datamodel.get_ranking_info_by_county(county_code)
   pws_info = datamodel.get_pws_details_by_county(county_code)
   repId = datamodel.get_rep_details()
+  
+  # Google api for URL shortener
+  post_url = 'https://www.googleapis.com/urlshortener/v1/url'
+  url = "http://www.h2osafe.us/results?address="+address
+  postdata = {'longUrl':url}
+  headers = {'Content-Type':'application/json'}
+  req = urllib2.Request(post_url,json.dumps(postdata),headers)
+  ret = urllib2.urlopen(req).read()
+  short_url=json.loads(ret)['id']
+  
+  
   logger.info("client ip " + clientip + " - " + address + " - "+county_code)
 
 #   email_id="vsujith@gmail.com"
@@ -145,7 +157,8 @@ def Search(request):
       'rating_button': rating_button,
       'pws_info': pws_info,
       'req_address':address,
-      'rep_twitter_id':repId
+      'rep_twitter_id':repId,
+      'short_url':short_url
   }, context_instance=RequestContext(request))
   
   
