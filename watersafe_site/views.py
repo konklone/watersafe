@@ -110,7 +110,7 @@ def Search(request):
   governor = contact_results['response']['results']['candidates'][0]['officials'][4]
   representative = contact_results['response']['results']['candidates'][0]['officials'][11]
   '''
-  county_code = datamodel.get_county_code_by_address(address)
+  county_code, countyname, state = datamodel.get_county_code_by_address(address)
   logger.info(county_code)
   ranking_info = datamodel.get_ranking_info_by_county(county_code)
   pws_info = datamodel.get_pws_details_by_county(county_code)
@@ -135,6 +135,8 @@ def Search(request):
 
   return render_to_response('results.html', {
       'county_id': county_code, 
+      'county_name' :countyname,
+      'state' : state,
       'address': address,
       'incident_count': ranking_info['incident_count'],
       'bucket': ranking_info['bucket'],

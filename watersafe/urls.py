@@ -9,7 +9,6 @@ urlpatterns = patterns('',
     # Examples:
     ('^$', search_form),
     ('^results$', Search),
-    ('^learn_more$', LearnMore),
     ('^sendTweet$', SendTweet),    
     url(r'^historicalMotionChart', 'watersafe_site.view.data_viz_views.historicalMotionChart'),
     # url(r'^$', 'watersafe.views.home', name='home'),
