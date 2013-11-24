@@ -26,6 +26,11 @@ def get_zip_from_address(address):
     elif len(geocode_info['results']) == 0:
         print "No results were returned."
     else:
+        # get lat/long for address and pass it to get representation details
+        location = geocode_info['results'][0]['geometry']['location']
+        global lat, lng 
+        lat = location['lat']
+        lng = location['lng']
         address_components = geocode_info['results'][0]['address_components']
         for component in address_components:
             if 'postal_code' in component['types']:
@@ -112,3 +117,19 @@ ORDER BY pws_status, CONTAMINATION_CNT desc
     finally:
         cur.close()
     return result
+
+def get_rep_details():
+    rep_twitter_id = 'h2osafeus'
+    url = "http://congress.api.sunlightfoundation.com/legislators/locate?apikey=45994d516b45490c892732ffe65a2a53&latitude={0}&longitude={1}".format(lat, lng)
+    #print url
+    response = do_GET(url)
+    rep_details = json.loads(response)
+    count = rep_details['count']
+    if rep_details['count'] == 0:
+        print "No representative details found!!"
+    #print rep_details
+    if count > 0:
+        for rep in rep_details['results']:
+            if 'Rep' in rep['title']:
+                rep_twitter_id = rep['twitter_id']
+    return rep_twitter_id

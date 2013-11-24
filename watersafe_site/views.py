@@ -55,12 +55,23 @@ def search_form(request):
 def LearnMore(request):
   return render_to_response('learn_more.html', context_instance=RequestContext(request))
 
+@csrf_exempt
+def SendTweet(request):
+    print "tweeted"
+    address = ''
+    rep_twitter_id = ''
+    if 'reqAddress' in request.POST:
+        address = request.POST['reqAddress']
+    if 'reportTo' in request.POST:
+        rep_twitter_id = request.POST['reportTo']
+    print "Tweet to " + rep_twitter_id + " for address " + address
+    #logger.info("Tweet to " + rep_twitter_id + " for address " + address)
 
 @csrf_exempt
 def SendEmail(request):
     subject, from_email = 'Violation Message', 'h2osafeus@gmail.com'
     to = ['vsujith@gmail.com']
-    address = '';
+    address = ''
     
     if 'reqAddress' in request.POST:
         address = request.POST['reqAddress']
@@ -87,6 +98,8 @@ def Search(request):
   clientip = get_client_ip(request)
   if 'address' in request.POST:
     address = request.POST['address']
+  elif 'address' in request.GET:
+    address = request.GET['address'] 
   else: 
     address = "20 N. 3rd St Philadelphia"
   
@@ -101,13 +114,14 @@ def Search(request):
   logger.info(county_code)
   ranking_info = datamodel.get_ranking_info_by_county(county_code)
   pws_info = datamodel.get_pws_details_by_county(county_code)
+  repId = datamodel.get_rep_details()
   logger.info("client ip " + clientip + " - " + address + " - "+county_code)
 
-  email_id="vsujith@gmail.com"
-  #Get Template
-  emailTemplate     = get_template('email.html')
-  data = Context({ 'pws_info': pws_info })
-  emailContent = emailTemplate.render(data)
+#   email_id="vsujith@gmail.com"
+#   #Get Template
+#   emailTemplate     = get_template('email.html')
+#   data = Context({ 'pws_info': pws_info })
+#   emailContent = emailTemplate.render(data)
   
   if ranking_info['bucket'] == "G":
     rating_type = "green-rating"
@@ -128,9 +142,8 @@ def Search(request):
       'rating_type': rating_type,
       'rating_button': rating_button,
       'pws_info': pws_info,
-      'email_id': email_id,
-      'email_content': emailContent,
-      'req_address' : address
+      'req_address':address,
+      'rep_twitter_id':repId
   }, context_instance=RequestContext(request))
   
   

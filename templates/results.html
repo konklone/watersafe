@@ -2,9 +2,10 @@
 <html>
 	<head>
 		<title> H2OSafe </title>
-		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+		
 		<link rel="stylesheet" type="text/css" href="/static/css/cardstyle.css" />
 		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -102,55 +103,35 @@
 				);
 			});
 
+			$('.tell-others').click(function() {
+				console.log('hello');
+				$('.social').slideToggle(300);
+			});
+
+			$('#tweetBtn').click(function() {
+				var url='http://twitter.com/home?status=';
+				var msg = "Please check water safety violations for address "+ "{{req_address}} at " + document.location.href +'?address=' + "{{ req_address }}";
 				
-				
-				$("#dialog").dialog({
-					autoOpen : false
-				});
-				$("#emailText").hide();
-
-				$('.tell-others').click(function() {
-					console.log('hello')
-					$('.social').slideToggle(300);
-				});
-
-
-				$('#greenBtn').click(function() {
-					$("#dialog").dialog("open");
-					return false;
-				});
-
-				$('#emailNotify').click(function() {
-					if ($('#emailNotify').is(':checked')) {
-						$("#emailText").show();
-					} else {
-						$("#emailText").hide();
-					}
-				});
-
-				$('#emailBtn').click(function() {
-					$("#dialog").dialog("close");
-					var address = document.getElementById("reqAddress").value;
-					var userEmail = document.getElementById("emailText").value;
-					alert(userEmail);
-					var reportTo = document.getElementById("reportTo").innerHtml;
-					$.ajax({// create an AJAX call...
+				// log tweet details
+				$.ajax({// create an AJAX call...
 						data : {
-							'reqAddress' : address,
-							'emailText' : userEmail,
-							'reportTo' : reportTo
+							'reqAddress' : "{{ req_address }}",
+							'reportTo' : "{{rep_twitter_id}}"
 						}, // get the form data
 						type : 'post', // GET or POST
-						url : '/sendEmail', // the file to call
+						url : '/sendTweet', // the file to call
 
 						success : function(response) {// on success..
-							alert('Email Sent');
-
+							alert('Tweet Sent');
 						}
-					});
-					return false;
 				});
+				
+				var left = (screen.width/2)-(500/2);
+  				var top = (screen.height/2)-(400/2);
+				window.open(url+encodeURIComponent(msg)+" via @"+encodeURIComponent("{{rep_twitter_id}}"),'Twitter','scrollbars=yes,toolbar=no,width=500,height=400,top='+top+',left='+left+'');
+				return false;
 			});
+		});		
 		</script>
 	</head>
 	<body onload="codeAddress()">
@@ -196,33 +177,18 @@
 						</p>
 
 						<br />
-						<div class="sharing" style="display: none">
+						<div class="sharing">
 							<div>
-								<button class="green-button" id="greenBtn">
-									{% if bucket == "G" %}
-									Thank Your Rep
+								{% if bucket == "G" %}
+									<input type="button" class="green-button" id="tweetBtn" value="Thank Your Rep">
 									{% else %}
-									Contact Rep
+									<input type="button" class="green-button" id="tweetBtn" value="Contact Rep">
 									{% endif %}
-								</button>
 								<button class="green-button tell-others">
 									Tell Others to Check
 								</button>
 							</div>
 
-							<div id="dialog" title="Send Email">
-								<b> Report To </b><label id="reportTo">{{ email_id }}</label>
-								<br>
-								<input type="text" id="emailText" name="emailText" placeholder="your email address..."/>
-								<input type="checkbox" id="emailNotify"/>
-								Notify Me
-
-								<div contenteditable="false" id="emailDiv">
-									{{ email_content }}
-								</div>
-								<input type="hidden" id="reqAddress" name="reqAddress" value='{{req_address}}' />
-								<input type="submit" id="emailBtn" class="css3button" value="Send Email"/>
-							</div>
 
 						</div>
 
@@ -258,7 +224,7 @@
 								<div id="visualization" style="width: 800px; height: 400px;"></div>
 								<h6> Click on a bubble (county) to trace its history</h6>
 							</div>
-							<div id="violations" class="tab-pane fade in active" style="width: 600px; padding-left: 0px; ">
+							<div id="violations" class="tab-pane fade in active" style="width: 600px; padding-left: 0px;">
 								<div id="wrapper">
 									<div id="columns">
 										{% for item in pws_info %}
