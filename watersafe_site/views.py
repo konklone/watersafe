@@ -58,20 +58,21 @@ def LearnMore(request):
 
 @csrf_exempt
 def SendTweet(request):
-    print "tweeted"
     address = ''
     rep_twitter_id = ''
     if 'reqAddress' in request.POST:
         address = request.POST['reqAddress']
     if 'reportTo' in request.POST:
         rep_twitter_id = request.POST['reportTo']
-    print "Tweet to " + rep_twitter_id + " for address " + address
+    clientip = get_client_ip(request)
+    datamodel.logTwitter(rep_twitter_id, address,clientip)
+    return HttpResponse(str(0), content_type="text/plain")
     #logger.info("Tweet to " + rep_twitter_id + " for address " + address)
 
 @csrf_exempt
 def SendEmail(request):
     subject, from_email = 'Violation Message', 'h2osafeus@gmail.com'
-    to = ['vsujith@gmail.com']
+    to = ['h2osafeus@gmail.com']
     address = ''
     
     if 'reqAddress' in request.POST:

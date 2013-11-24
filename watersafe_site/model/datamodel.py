@@ -152,3 +152,10 @@ def get_rep_details():
             if 'Rep' in rep['title']:
                 rep_twitter_id = rep['twitter_id']
     return rep_twitter_id
+
+def logTwitter(repId,address,clientIP):
+    try:
+        cur = connection.cursor()
+        cur.execute('insert into TWITTER_LOG_INFO(rep_id,address,clientIP) values (%s, %s, %s)',(repId,address,clientIP),)
+    finally:
+        cur.close()
