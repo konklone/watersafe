@@ -4,6 +4,7 @@ Created on Oct 20, 2013
 @author: joekumar
 '''
 from django.db import connection
+from django.db import transaction
 import json, urllib, httplib2, logging
 
 http = httplib2.Http()
@@ -153,9 +154,11 @@ def get_rep_details():
                 rep_twitter_id = rep['twitter_id']
     return rep_twitter_id
 
+@transaction.commit_manually
 def logTwitter(repId,address,clientIP):
     try:
         cur = connection.cursor()
         cur.execute('insert into TWITTER_LOG_INFO(rep_id,address,clientIP) values (%s, %s, %s)',(repId,address,clientIP),)
+        transaction.commit()
     finally:
         cur.close()
