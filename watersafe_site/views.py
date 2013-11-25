@@ -105,13 +105,6 @@ def Search(request):
   else: 
     address = "20 N. 3rd St Philadelphia"
   
-  '''
-  contact_results = json.loads(Contact(address))
-  senator1 = contact_results['response']['results']['candidates'][0]['officials'][1]
-  senator2 = contact_results['response']['results']['candidates'][0]['officials'][2]
-  governor = contact_results['response']['results']['candidates'][0]['officials'][4]
-  representative = contact_results['response']['results']['candidates'][0]['officials'][11]
-  '''
   lat, lng, county_code, countyname, state = datamodel.get_county_code_by_address(address)
   logger.info(county_code)
   ranking_info = datamodel.get_ranking_info_by_county(county_code)
@@ -137,17 +130,15 @@ def Search(request):
 #   emailContent = emailTemplate.render(data)
   twtButton = "Contact Rep"
   twtMessage = "Water safety violations for address"
+  rating_button = "green-button"
   if ranking_info['bucket'] == "G":
     rating_type = "green-rating"
-    rating_button = "green-button"
     twtButton = "Thank Your Rep"
     twtMessage = "Thank You for water safety @"
   elif ranking_info['bucket'] == "Y":
     rating_type = "yellow-rating"
-    rating_button = "yellow-button"
   else: 
     rating_type = "red-rating"
-    rating_button = "red-button"
 
   return render_to_response('results.html', {
       'county_id': county_code, 
