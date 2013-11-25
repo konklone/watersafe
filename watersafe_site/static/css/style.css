@@ -71,6 +71,7 @@ body {
 .rating {
 	padding: 20px;
 	width: 620px;
+	height: 200px
 }
 
 .rating hr {
@@ -420,11 +421,15 @@ a:hover {
   line-height: 1.428571429;
   border: 1px solid transparent;
   border-radius: 4px 4px 0 0;
-  background-color: cyan;
+  background-color: rgba(12, 17, 17, 0.38);
+  color:white;
+  font-size: small;
 }
 
 .nav-tabs > li > a:hover {
   border-color: #eeeeee #eeeeee #dddddd;
+  color:black;
+  font-size: small;
 }
 
 .nav-tabs > li.active > a,

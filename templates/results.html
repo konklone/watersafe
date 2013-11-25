@@ -129,7 +129,7 @@
 
 			$('#tweetBtn').click(function() {
 				var url='http://twitter.com/home?status=';
-				var msg = "{{twtMessage}}"+ "{{req_address}} at " + "{{short_url}}" ;
+				var msg = " {{twtMessage}}"+ " {{req_address}} at " + "{{short_url}} #h2osafeus" ;
 				// log tweet details
 				$.ajax({// create an AJAX call...
 						data : {
@@ -143,13 +143,13 @@
 						}
 				});
 				
-				url = url+encodeURIComponent(msg)+" via @"+encodeURIComponent("{{rep_twitter_id}}");
+				url = url+"@"+encodeURIComponent("{{rep_twitter_id}}")+encodeURIComponent(msg);
 				openWindow(url,'Twitter');
 				return false;
 			});
 			
 			$('#fbBtn').click(function() {
-				var url='http://www.facebook.com/sharer.php?u=http://www.h2osafe.us&t=Check your water safety violations';
+				var url='http://www.facebook.com/sharer.php?u=' +encodeURIComponent("{{short_url}}");
 				//url = url+encodeURIComponent('http://www.h2osafe.us')+encodeURIComponent("&t=")+encodeURIComponent("Check your water safety violations");
   				openWindow(url,'Facebook');
 				return false;
@@ -186,7 +186,7 @@
 				<div class="detail-view right">
 
 					<div class=" {{ rating_type }} rating">
-						<h1> {% if bucket == "G" %}
+						<h1 style="font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif"> {% if bucket == "G" %}
 						GREAT!
 						{% elif bucket == "Y" %}
 						WARNING!
@@ -195,8 +195,7 @@
 						{% endif %} </h1>
 						<hr />
 
-						<p>
-							<br />
+						<p> <h4 style="font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif">
 							{% if bucket == "G" %}
 							Your water is in great shape.
 							{% elif bucket == "Y" %}
@@ -204,7 +203,7 @@
 							{% else %}
 							Contact your state rep right away, you should not be drinking this water at all.
 							{% endif %}
-						</p>
+						</h4> </p>
 
 						<br />
 						<div class="sharing">
@@ -228,10 +227,10 @@
 					</div>
 
 					<div id="total">
-						<h2>{{ incident_count }} Total Violations</h2>
+						<h3 style="font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif">{{ incident_count }} Water Contamination Violations in {{county_name}} county</h3>
 						<br />
 					</div>
-					<div >
+					<div style="width: 800px" >
 						<ul class="nav nav-tabs">
 							<li class="active">
 								<a href="#violations" data-toggle="tab">Violations</a>
