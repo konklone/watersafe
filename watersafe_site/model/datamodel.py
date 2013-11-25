@@ -43,14 +43,16 @@ def get_county_code_by_address(address):
     logger.debug("zip code is " + zip)
     cur = connection.cursor()
     try:
-        cur.execute('select fips_county_id, county, state from ZIP_GEO_INFO where zip_code=%s',[format(zip).upper()])
+        cur.execute('select latitude , longitude, fips_county_id, county, state from ZIP_GEO_INFO where zip_code=%s',[format(zip).upper()])
         result = cur.fetchone()
-        countyCode = result[0]
-        countyName = result[1]
-        state = result[2]
+        lat = result[0]
+        lng = result[1]
+        countyCode = result[2]
+        countyName = result[3]
+        state = result[4]
     finally:
         cur.close()
-    return (countyCode,countyName,state)
+    return (lat, lng, countyCode,countyName,state)
     
 
 def get_ranking_info_by_county(county_code):
@@ -83,6 +85,15 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
+def getListOfTuples(cursor):
+    result_list = []
+    desc = cursor.description
+    for row in cursor.fetchall():
+        logger.info(row)
+        result_list.append(dict(zip([col[0] for col in desc], row)))
+    return result_list
+
+
 def get_state_historic_violations(county_code):
     query = """
     select vsyc.COUNTY COUNTY , vsyc.YEAR DATE_YEAR , vsyc.VIOLATIONS_COUNT VIOLATIONS_COUNT
@@ -114,26 +125,35 @@ def get_county_contaminant_historic_violations(county_code):
     return result
 
     
-def get_pws_details_by_county(county_code):
+def get_pws_details_by_county(lat, lng, county_code):
 
     query = """
       SELECT PWSID pwsid, PWSNAME pws_name, CONTACTCITY contact_city
       , SOURCE_NAME source_long_name, POPULATION_SERVED population_served, PWS_STATUS pws_status, VIOLATION_NAME violation_name
       , VIOLATION_DETAILS_2012.CONTAMINANT contaminant, CONTAMINANT_MEASURE contaminant_measure
       , CONTAMINANT_EFFECTS.Health_Effect health_effect
+      , VIOLATION_DETAILS_2012.CONTACTZIP
       , COUNT(*) CONTAMINATION_CNT
-      FROM VIOLATION_DETAILS_2012 LEFT JOIN CONTAMINANT_EFFECTS ON VIOLATION_DETAILS_2012.CONTAMINANT = CONTAMINANT_EFFECTS.Contaminant
-      WHERE COUNTY_ID = %s 
+      , ( 3959 * acos( cos( radians(%s) ) 
+              * cos( radians( ZG.latitude ) ) 
+              * cos( radians( ZG.longitude ) - radians(%s) ) 
+              + sin( radians(%s) ) 
+              * sin( radians( ZG.latitude ) ) ) ) AS distance
+      FROM ZIP_GEO_INFO ZG,VIOLATION_DETAILS_2012 LEFT JOIN CONTAMINANT_EFFECTS ON VIOLATION_DETAILS_2012.CONTAMINANT = CONTAMINANT_EFFECTS.Contaminant
+      WHERE COUNTY_ID = %s
+      AND ZG.`zip_code` = CONTACTZIP
 GROUP BY  PWSID , PWSNAME , CONTACTCITY 
       , SOURCE_NAME , POPULATION_SERVED , PWS_STATUS , VIOLATION_NAME 
-      , CONTAMINANT , CONTAMINANT_MEASURE 
-ORDER BY pws_status, CONTAMINATION_CNT desc     
+      , CONTAMINANT , CONTAMINANT_MEASURE, CONTACTZIP
+ORDER BY distance
 
     """
     cur = connection.cursor()
     try:
-        cur.execute(query,[county_code])
-        result = dictfetchall(cur)
+        cur.execute(query,[lat, lng, lat, county_code])
+        logger.info(query + "\n"+lat + " \n" + lng)
+        result = getListOfTuples(cur)
+        logger.info(result)
     finally:
         cur.close()
     return result

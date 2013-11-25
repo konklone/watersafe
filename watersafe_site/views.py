@@ -112,10 +112,10 @@ def Search(request):
   governor = contact_results['response']['results']['candidates'][0]['officials'][4]
   representative = contact_results['response']['results']['candidates'][0]['officials'][11]
   '''
-  county_code, countyname, state = datamodel.get_county_code_by_address(address)
+  lat, lng, county_code, countyname, state = datamodel.get_county_code_by_address(address)
   logger.info(county_code)
   ranking_info = datamodel.get_ranking_info_by_county(county_code)
-  pws_info = datamodel.get_pws_details_by_county(county_code)
+  pws_info = datamodel.get_pws_details_by_county(lat, lng, county_code)
   repId = datamodel.get_rep_details()
   
   # Google api for URL shortener
