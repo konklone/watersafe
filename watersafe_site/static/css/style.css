@@ -406,9 +406,17 @@ a:hover {
 .search-on-results input[type=submit] {
 
 }
+.nav-tabs {
+  border-bottom: 1px solid red;
+}
+
+.nav-tabs > li {
+  float: left;
+  margin-bottom: 0px;
+}
 
 .nav-tabs > li > a {
-  margin-right: 0px;
+  margin-right: 2px;
   line-height: 1.428571429;
   border: 1px solid transparent;
   border-radius: 4px 4px 0 0;
@@ -416,8 +424,7 @@ a:hover {
 }
 
 .nav-tabs > li > a:hover {
- border-color: red;
- background-color: black;
+  border-color: #eeeeee #eeeeee #dddddd;
 }
 
 .nav-tabs > li.active > a,
@@ -425,7 +432,7 @@ a:hover {
 .nav-tabs > li.active > a:focus {
   color: #555555;
   cursor: default;
-  background-color: orange;
-  border: 1px solid #dddddd;
+  background-color: #ffffff;
+  border: 1px solid red;
   border-bottom-color: transparent;
 }

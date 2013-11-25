@@ -129,8 +129,7 @@
 
 			$('#tweetBtn').click(function() {
 				var url='http://twitter.com/home?status=';
-				var msg = "Water safety violations for address "+ "{{req_address}} at " + "{{short_url}}" ;
-				
+				var msg = "{{twtMessage}}"+ "{{req_address}} at " + "{{short_url}}" ;
 				// log tweet details
 				$.ajax({// create an AJAX call...
 						data : {
@@ -144,11 +143,23 @@
 						}
 				});
 				
-				var left = (screen.width/2)-(500/2);
-  				var top = (screen.height/2)-(400/2);
-				window.open(url+encodeURIComponent(msg)+" via @"+encodeURIComponent("{{rep_twitter_id}}"),'Twitter','scrollbars=yes,toolbar=no,width=500,height=400,top='+top+',left='+left+'');
+				url = url+encodeURIComponent(msg)+" via @"+encodeURIComponent("{{rep_twitter_id}}");
+				openWindow(url,'Twitter');
 				return false;
 			});
+			
+			$('#fbBtn').click(function() {
+				var url='http://www.facebook.com/sharer.php?u=http://www.h2osafe.us&t=Check your water safety violations';
+				//url = url+encodeURIComponent('http://www.h2osafe.us')+encodeURIComponent("&t=")+encodeURIComponent("Check your water safety violations");
+  				openWindow(url,'Facebook');
+				return false;
+			});
+			
+			function openWindow(url,name){
+				var left = (screen.width/2)-(500/2);
+  				var top = (screen.height/2)-(400/2);
+  				window.open(url,name,'scrollbars=yes,toolbar=no,width=500,height=400,top='+top+',left='+left+'');
+			}
 		});		
 		</script>
 	</head>
@@ -198,17 +209,9 @@
 						<br />
 						<div class="sharing">
 							<div>
-								{% if bucket == "G" %}
-									<input type="button" class="green-button" id="tweetBtn" value="Thank Your Rep">
-									{% else %}
-									<input type="button" class="green-button" id="tweetBtn" value="Contact Rep">
-									{% endif %}
-								<button class="green-button tell-others">
-									Tell Others to Check
-								</button>
+								<input type="button" class="{{rating_button}}" id="tweetBtn" value="{{twtButton}}">
+								<input type="button" class="green-button" id="fbBtn" value="Tell Others to Check">
 							</div>
-
-
 						</div>
 
 						<div class="social" style="display:none;" >
@@ -228,7 +231,7 @@
 						<h2>{{ incident_count }} Total Violations</h2>
 						<br />
 					</div>
-					<div class="container">
+					<div >
 						<ul class="nav nav-tabs">
 							<li class="active">
 								<a href="#violations" data-toggle="tab">Violations</a>
