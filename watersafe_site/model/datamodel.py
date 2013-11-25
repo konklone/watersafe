@@ -89,7 +89,6 @@ def getListOfTuples(cursor):
     result_list = []
     desc = cursor.description
     for row in cursor.fetchall():
-        logger.info(row)
         result_list.append(dict(zip([col[0] for col in desc], row)))
     return result_list
 
@@ -153,7 +152,6 @@ ORDER BY distance
         cur.execute(query,[lat, lng, lat, county_code])
         logger.info(query + "\n"+lat + " \n" + lng)
         result = getListOfTuples(cur)
-        logger.info(result)
     finally:
         cur.close()
     return result
