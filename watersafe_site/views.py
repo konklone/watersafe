@@ -135,16 +135,19 @@ def Search(request):
 #   emailTemplate     = get_template('email.html')
 #   data = Context({ 'pws_info': pws_info })
 #   emailContent = emailTemplate.render(data)
-  
+  twtButton = "Contact Rep"
+  twtMessage = "Water safety violations for address"
   if ranking_info['bucket'] == "G":
     rating_type = "green-rating"
     rating_button = "green-button"
+    twtButton = "Thank Your Rep"
+    twtMessage = "Thank You for water safety @"
   elif ranking_info['bucket'] == "Y":
     rating_type = "yellow-rating"
-    rating_button = "yellow_button"
+    rating_button = "yellow-button"
   else: 
     rating_type = "red-rating"
-    rating_button = "red_button"
+    rating_button = "red-button"
 
   return render_to_response('results.html', {
       'county_id': county_code, 
@@ -159,6 +162,8 @@ def Search(request):
       'pws_info': pws_info,
       'req_address':address,
       'rep_twitter_id':repId,
+      'twtButton':twtButton,
+      'twtMessage':twtMessage,
       'short_url':short_url
   }, context_instance=RequestContext(request))
   
