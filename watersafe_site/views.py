@@ -56,6 +56,13 @@ def search_form(request):
 def LearnMore(request):
   return render_to_response('learn_more.html', context_instance=RequestContext(request))
 
+def AboutUs(request):
+  return render_to_response('aboutus.html', context_instance=RequestContext(request))
+
+def Team(request):
+  return render_to_response('team.html', context_instance=RequestContext(request))
+
+
 @csrf_exempt
 def SendTweet(request):
     address = ''
