@@ -8,7 +8,7 @@
 		<meta name="author" content="">
 		<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
 
-		<title>Jumbotron Template for Bootstrap</title>
+		<title>About H2Osafe</title>
 
 		<!-- Bootstrap core CSS -->
 		<link href="/static/css/bootstrap.css" rel="stylesheet">
@@ -41,19 +41,27 @@
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">About</a></li>
-	                    <li><a href="#">Team</a></li>
-	                    </ul>
+						<li class="active">
+							<a href="#">About</a>
+						</li>
+					</ul>
 				</div><!--/.navbar-collapse -->
 			</div>
 		</div>
+		<br>
 
 		<!-- Main jumbotron for a primary marketing message or call to action -->
-		<div class="jumbotron">
-			<div class="container">
-				<h1>H2Osafe</h1>
+		<div class="container" >
+			<br>
+			<div class="jumbotron" style="
+			padding-bottom: 12px;
+			margin-bottom: 5px;
+			padding-top: 34px;
+			padding-left: 5px;
+			">
+
 				<p>
-					The goal of H2Osafe is to inform citizens of water contaminations in their area and action on it by contacting their representatives.
+					Our goal is to inform citizens of water contaminations in their area and action on it by contacting their representatives.
 				</p>
 			</div>
 		</div>
@@ -61,58 +69,77 @@
 		<div class="container">
 			<!-- Example row of columns -->
 			<div class="row">
-				<div class="col-md-12">
-					<h2> What am I seeing on the search results ? </h2>
+				<div class="col-md-6">
+					<h3> What information does H2Osafe provide ? </h3>
 					<p>
-						In the US, 85% of population is served water through a public water system (PWS). The rest 15% use private sources of water like wells etc. 
-						Congress passed the Safe Drinking Water Act (SDWA) in 1974 to protect the quality of American drinking water by regulating the nation’s public drinking water supply.
-						Each PWS is checked for over 90 different contaminants like nitrate, arsenic etc and any violation in the contaminant level is reported to the public. 
-						h2oSafe has compiled this information for each county and have ranked them in their state.
+						In the US, 85% of population is served water through a public water system (PWS).
+						EPA regulates each PWS by <u>checking for over 90 different contaminants </u>like nitrate, arsenic etc and any violation in the contaminant level is reported to the public.
+						<br>
+						H2Osafe has compiled this contamination incident information for each PWS in every county and have ranked counties in their state. Ranking is based on any violation that has happened since 2012
 					</p>
-					<h2> What is a PWS (Public Water System) ? What does it have to do with water in my tap ? </h2>
+				</div>
+				<div class="col-md-6">
+					<h3>What does PWS have to do with water in my tap?</h3>
 					<p>
-						A PWS is one that serves piped water to at least 25 persons or 15 service connections for at least 60 days each year.
+						A Public Water System (PWS) is one that serves piped water to at least 25 persons or 15 service connections for at least 60 days each year.
 						The source of water for a PWS is either
-						<ol> 
-							<li> Groundwater </li> 
-							<li> Surface water like rivers, lakes and reservoirs </li>
-						</ol>  
-						Although most of the PWS use groundwater as their source (127,000 PWS uses groundwater in comparison to 13,000 that uses surface water)
-						, most of population is served through surface water 209.4 million compared to 97.5 million served through groundwater.
+					</p>
+					<ol class="text-danger">
+						<li>
+							Groundwater : 127,000 PWS uses groundwater to serve 97.5 million Americans
+						</li>
+						<li>
+							Surface water (rivers, reservoirs etc) : 13,000 PWS uses surface water to serve 209.4 million Americans
+						</li>
+					</ol>
+					<p>
+						Below imagery explains how a PWS gets water from a water source to a home
 						<img src="/static/images/PWS_workflow.png" class="img-rounded" />
 					</p>
-
 				</div>
 			</div>
+
 			<div class="row">
-				<div class="col-md-6">
-					<h2>Heading</h2>
+				<h3 align="center"> Team H2Osafe </h3>
+				<div class="col-md-3">
+					<h4> Joe Prasanna Kumar </h4>
+					<strong>
+					<p class="text-muted">
+						Founder, Architect of H20safe
+					</p></strong>
 					<p>
-						Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+						Joe was part of a Philly hackathon team along with 5 others and developed a prototype version called watersafe that provided water contamination insights for Pennsylvania.
+						After being dormant for several months, Joe revived watersafe as H2Osafe.us and launched it with national level water contamination info.
+						Joe is passionate about data driven products and holds a masters in CS from the University of Illinois at Urbana-Champaign
 					</p>
 				</div>
+				<div class="col-md-3">
+					<br><br><br>
+					<img src="/static/images/Joe.png" class="img-rounded" />
+					</div>
 				<div class="col-md-6">
-					<h2>Heading</h2>
+					<h4> Sujith V </h4>
+					<strong>
+					<p class="text-muted">
+						Full stack developer, UX designer of H20safe
+					</p></strong>
 					<p>
-						Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+						Sujith likes to hack on all tiers of web applications and works as a technical architect at Infosys technologies ltd
 					</p>
 				</div>
+
+				<hr>
+
+				<footer>
+					<p></p>
+				</footer>
 			</div>
+			<!-- /container -->
 
-			<hr>
-
-			<footer>
-				<p>
-					&copy; Company 2013
-				</p>
-			</footer>
-		</div>
-		<!-- /container -->
-
-		<!-- Bootstrap core JavaScript
-		================================================== -->
-		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-		<script src="/static/js/bootstrap.min.js"></script>
+			<!-- Bootstrap core JavaScript
+			================================================== -->
+			<!-- Placed at the end of the document so the pages load faster -->
+			<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+			<script src="/static/js/bootstrap.min.js"></script>
 	</body>
 </html>
