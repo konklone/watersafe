@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+
+		<title>PWS Facts</title>
+
+		<!-- Bootstrap core CSS -->
+		<link href="/static/css/bootstrap.css" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="jumbotron.css" rel="stylesheet">
+
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
+			google.load("visualization", "1", {
+				packages : ["corechart"]
+			});
+			google.setOnLoadCallback(drawChart);
+			function drawChart() {
+				var data = google.visualization.arrayToDataTable([['PWS Name', 'Population Served', {
+					role : 'annotation'
+				}], ['Flushing',8271000,'New York City System'],
+['Los Angeles',3855879,'Los Angeles-City, Dept. Of Water & Power'],
+['Chicago',2695598,'Chicago'],
+['Boston',2360000,'MWRA'],
+['Miami',2100000,'Mdwasa - Main System'],
+['Houston',2099000,'City Of Houston'],
+['Syracuse',2000000,'New York State Fair'],
+['Silver Spring',1800000,'Washington Suburban Sanitary Commission'],
+['Baltimore',1600000,'Baltimore City'],
+['Philadelphia',1600000,'Philadelphia Water Department']]);
+
+				var options = {
+					title : 'Biggest PWS (by population served)',
+					legend: { position: "none" },
+					vAxis : {
+						title : 'City',
+						titleTextStyle : {
+							color : 'Blue',
+							size : '14px'
+						}
+					},
+					hAxis : {
+						title : 'Population served',
+						titleTextStyle : {
+							color : 'Blue',
+							size : '14px'
+						}
+					}
+				};
+				var formatter = new google.visualization.NumberFormat({pattern:'###,###,###'} );
+  				formatter.format(data, 1);
+				var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+				chart.draw(data, options);
+			}
+		</script>
+	</head>
+
+	<body>
+		
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/">H2Osafe</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li>
+							<a href="#">About</a>
+						</li>
+						<li  class="active">
+							<a href="/pwsfacts">PWS Facts</a>
+						</li>
+
+					</ul>
+				</div><!--/.navbar-collapse -->
+			</div>
+		</div>
+
+<br> <br>
+		<div class="container">
+			<!-- Example row of columns -->
+			<div class="row">
+				<div class="col-md-12">
+					<h3> Top 10 worst counties 2012-2013 </h3>
+					<iframe width="900" height="300" scrolling="no" frameborder="no" src="https://www.google.com/fusiontables/embedviz?q=select+col4+from+1oUvNJuTKnXpqdBR1jBHtCvJ9cSvjGD9UaJpATKs&amp;viz=MAP&amp;h=false&amp;lat=37.92482218455473&amp;lng=-95.5028058625&amp;t=1&amp;z=4&amp;l=col4&amp;y=2&amp;tmplt=2&amp;hml=GEOCODABLE"></iframe>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h3> Counties with NO violations ever </h3>
+					<iframe width="900" height="350" scrolling="no" frameborder="no" src="https://www.google.com/fusiontables/embedviz?q=select+col3+from+1Dq4KSJ80eO4DjJaWU_YACxg8d9zLddhwwwmILKY&amp;viz=MAP&amp;h=false&amp;lat=40.46260808273061&amp;lng=-95.236821125&amp;t=1&amp;z=4&amp;l=col3&amp;y=2&amp;tmplt=2&amp;hml=TWO_COL_LAT_LNG"></iframe>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-7">
+					<div id="chart_div" style="width: 800px; height: 500px;"></div>
+				</div>
+				<div class="col-md-5">
+
+				</div>
+			</div>
+
+		</div>
+
+		<footer>
+			<p></p>
+		</footer>
+
+		<!-- /container -->
+
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="/static/js/bootstrap.min.js"></script>
+	</body>
+</html>

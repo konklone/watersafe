@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from watersafe_site.views import Search, LearnMore, search_form, SendTweet, \
-    AboutUs, Team
+    AboutUs, PWSFacts
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     ('^results$', Search),
     ('^sendTweet$', SendTweet),
     ('^aboutus$', AboutUs),
-    ('^team$', Team),    
+    ('^pwsfacts$', PWSFacts),    
     url(r'^historicalMotionChart', 'watersafe_site.view.data_viz_views.historicalMotionChart'),
     # url(r'^$', 'watersafe.views.home', name='home'),
     # url(r'^watersafe/', include('watersafe.foo.urls')),

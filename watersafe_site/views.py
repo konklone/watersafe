@@ -59,8 +59,8 @@ def LearnMore(request):
 def AboutUs(request):
   return render_to_response('aboutus.html', context_instance=RequestContext(request))
 
-def Team(request):
-  return render_to_response('team.html', context_instance=RequestContext(request))
+def PWSFacts(request):
+  return render_to_response('pws_facts.html', context_instance=RequestContext(request))
 
 
 @csrf_exempt
