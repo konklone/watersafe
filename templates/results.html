@@ -45,7 +45,7 @@
 			};
 
 			function getPopContent(target) {
-				console.log(" target is" + target);
+				console.log(" target is|" + target+ "|");
 				var res = $("div[id='" + target + "']").html();
 				return res;
 			}
@@ -116,8 +116,8 @@
 					var $pElem = $(this);
 					console.log($pElem.text());
 					$pElem.popover({
-						title : getPopTitle($pElem.text()),
-						content : getPopContent($pElem.text()),
+						title : getPopTitle($pElem.text().trim()),
+						content : getPopContent($pElem.text().trim()),
 						trigger : "hover",
 						placement : "auto"
 					});
@@ -198,9 +198,9 @@
 							<h4 style="font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif"> {% if bucket == "G" %}
 							Your water is in great shape.
 							{% elif bucket == "Y" %}
-							Warning: Your water is alright but could be better.
+							Your water is alright but could be better.
 							{% else %}
-							Contact your state rep right away, you should not be drinking this water at all.
+							You may want to learn more before drinking your water.
 							{% endif %} </h4>
 						</p>
 
