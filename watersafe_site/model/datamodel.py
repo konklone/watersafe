@@ -187,7 +187,7 @@ def get_pws_details_for_map(county_code):
         cur = connection.cursor()
         try:
             cur.execute(query, [county_code])
-            result = getListOfTuples(cur)
+            result = dictfetchall(cur)
         finally:
             cur.close()
         return result
