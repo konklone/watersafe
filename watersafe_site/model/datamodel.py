@@ -43,7 +43,7 @@ def get_county_code_by_address(address):
     logger.debug("zip code is " + zip)
     cur = connection.cursor()
     try:
-        cur.execute('select latitude , longitude, fips_county_id, county, state from ZIP_GEO_INFO where zip_code=%s',[format(zip).upper()])
+        cur.execute('select latitude , longitude, fips_county_id, county, state from ZIP_GEO_INFO where zip_code=%s', [format(zip).upper()])
         result = cur.fetchone()
         lat = result[0]
         lng = result[1]
@@ -52,7 +52,7 @@ def get_county_code_by_address(address):
         state = result[4]
     finally:
         cur.close()
-    return (lat, lng, countyCode,countyName,state)
+    return (lat, lng, countyCode, countyName, state)
     
 
 def get_ranking_info_by_county(county_code):
@@ -65,7 +65,7 @@ def get_ranking_info_by_county(county_code):
     
     cur = connection.cursor()
     try:
-        cur.execute(query,[county_code])
+        cur.execute(query, [county_code])
         #cur.execute(query)
         result = cur.fetchone()
         county_ranking_info = {}
@@ -102,7 +102,7 @@ def get_state_historic_violations(county_code):
     """
     cur = connection.cursor()
     try:
-        cur.execute(query,[county_code])
+        cur.execute(query, [county_code])
         result = dictfetchall(cur)
     finally:
         cur.close()
@@ -117,7 +117,7 @@ def get_county_contaminant_historic_violations(county_code):
     """
     cur = connection.cursor()
     try:
-        cur.execute(query,[county_code])
+        cur.execute(query, [county_code])
         result = dictfetchall(cur)
     finally:
         cur.close()
@@ -149,12 +149,50 @@ ORDER BY distance
     """
     cur = connection.cursor()
     try:
-        cur.execute(query,[lat, lng, lat, county_code])
-        logger.info(query + "\n"+lat + " \n" + lng)
+        cur.execute(query, [lat, lng, lat, county_code])
+        logger.info(query + "\n" + lat + " \n" + lng)
         result = getListOfTuples(cur)
     finally:
         cur.close()
     return result
+
+def get_pws_details_for_map(county_code):
+        query = """
+      SELECT PWSID, PWS_NAME, CONTACT_CITY, population_served , PWS_STATUS, CONTACTZIP
+        , ZG.latitude lat, ZG.longitude lng 
+        , case when SUM(CONTAMINATION_CNT) > 0 then 'Y' else 'N' end violation_fl
+        FROM(
+            SELECT PWSID pwsid, PWSNAME pws_name, CONTACTCITY contact_city
+                  , POPULATION_SERVED population_served, PWS_STATUS pws_status , VIOLATION_DETAILS_2012.CONTACTZIP
+                  , COUNT(*) CONTAMINATION_CNT
+                  FROM ZIP_GEO_INFO ZG,VIOLATION_DETAILS_2012 
+                  WHERE COUNTY_ID = %s
+                  AND ZG.`zip_code` = CONTACTZIP
+            GROUP BY  PWSID , PWSNAME , CONTACTCITY 
+                  , POPULATION_SERVED , PWS_STATUS, CONTACTZIP
+            UNION
+            SELECT PWS.PWSID, PWSNAME, CONTACTCITY, PWS.RETPOPSRVD , PWS.STATUS, PWS.CONTACTZIP, 0 CONTAMINATION_CNT
+            FROM PWS WHERE PWSID IN
+            (SELECT PWSID
+            FROM PWS_COUNTY PWSC
+            WHERE PWSC.FIPSCOUNTY = %s
+                ) 
+            AND PWS.STATUS = 'Active'
+        ) ALLP, ZIP_GEO_INFO ZG
+        WHERE ALLP.contactzip = ZG.zip_code
+        GROUP BY PWSID, PWS_NAME, CONTACT_CITY, population_served , PWS_STATUS, CONTACTZIP
+        ORDER BY PWSID
+
+    """
+        cur = connection.cursor()
+        try:
+            cur.execute(query, [county_code])
+            result = getListOfTuples(cur)
+        finally:
+            cur.close()
+        return result
+    
+    
 
 def get_rep_details():
     rep_twitter_id = 'h2osafeus'
@@ -173,10 +211,10 @@ def get_rep_details():
     return rep_twitter_id
 
 @transaction.commit_manually
-def logTwitter(repId,address,clientIP):
+def logTwitter(repId, address, clientIP):
     try:
         cur = connection.cursor()
-        cur.execute('insert into TWITTER_LOG_INFO(rep_id,address,clientIP) values (%s, %s, %s)',(repId,address,clientIP),)
+        cur.execute('insert into TWITTER_LOG_INFO(rep_id,address,clientIP) values (%s, %s, %s)', (repId, address, clientIP),)
         transaction.commit()
     finally:
         cur.close()
