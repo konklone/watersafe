@@ -88,7 +88,6 @@ def SendEmail(request):
         userEmail = request.POST['emailText']
         to.append(userEmail)
         
-    print 'address'+userEmail
     county_code = datamodel.get_county_code_by_address(address)
     pws_info = datamodel.get_pws_details_by_county(county_code)
   
@@ -117,6 +116,7 @@ def Search(request):
   ranking_info = datamodel.get_ranking_info_by_county(county_code)
   pws_info = datamodel.get_pws_details_by_county(lat, lng, county_code)
   repId = datamodel.get_rep_details()
+  map_data = datamodel.get_pws_details_for_map(county_code)
   
   # Google api for URL shortener
   post_url = 'https://www.googleapis.com/urlshortener/v1/url'
@@ -162,7 +162,8 @@ def Search(request):
       'rep_twitter_id':repId,
       'twtButton':twtButton,
       'twtMessage':twtMessage,
-      'short_url':short_url
+      'short_url':short_url,
+      'map_data':map_data
   }, context_instance=RequestContext(request))
   
   

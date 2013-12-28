@@ -20,7 +20,7 @@
 				geocoder = new google.maps.Geocoder();
 				var address = document.getElementById("reqAddress").value;
 				var mapOptions = {
-					zoom : 11,
+					zoom : 9,
 					mapTypeId : google.maps.MapTypeId.ROADMAP
 				}
 				map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
@@ -38,6 +38,30 @@
 						alert("Geocode was not successful for the following reason: " + status);
 					}
 				});
+	
+				var infowindow = new google.maps.InfoWindow();
+			
+			    var marker, i;
+				
+			    {% for item in map_data %} 
+			    var iconMarker = "http://google.com/mapfiles/ms/micons/green-dot.png";
+			      if("{{item.violation_fl}}"=="Y"){
+			      	iconMarker = "http://google.com/mapfiles/ms/micons/red-dot.png";
+			      }	
+			      marker = new google.maps.Marker({
+			        position: new google.maps.LatLng("{{item.lat}}", "{{item.lng}}"),
+			        map: map,
+			        icon: iconMarker
+			      });
+			
+			      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+			        return function() {
+			          infowindow.setContent("{{item.PWS_NAME}} <br> Population Served : {{item.population_served}}");
+			          infowindow.open(map, marker);
+			        }
+			      })(marker, i));
+			   {% endfor %}
+				
 			}
 
 			function getPopTitle(target) {
