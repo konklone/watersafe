@@ -171,12 +171,10 @@ def get_pws_details_for_map(county_code):
             GROUP BY  PWSID , PWSNAME , CONTACTCITY 
                   , POPULATION_SERVED , PWS_STATUS, CONTACTZIP
             UNION
-            SELECT PWS.PWSID, PWSNAME, CONTACTCITY, PWS.RETPOPSRVD , PWS.STATUS, PWS.CONTACTZIP, 0 CONTAMINATION_CNT
-            FROM PWS WHERE PWSID IN
-            (SELECT PWSID
-            FROM PWS_COUNTY PWSC
-            WHERE PWSC.FIPSCOUNTY = %s
-                ) 
+            SELECT PWS.PWSID, PWSNAME, CONTACTCITY, PWS.`RETPOPSRVD` , PWS.STATUS, PWS.`CONTACTZIP`, 0 CONTAMINATION_CNT
+            FROM PWS USE INDEX(PRIMARY), PWS_COUNTY PWSC USE INDEX(PWSID)
+            WHERE PWS.PWSID = PWSC.PWSID
+            AND PWSC.`FIPSCOUNTY` = %s
             AND PWS.STATUS = 'Active'
         ) ALLP, ZIP_GEO_INFO ZG
         WHERE ALLP.contactzip = ZG.zip_code
@@ -186,7 +184,7 @@ def get_pws_details_for_map(county_code):
     """
         cur = connection.cursor()
         try:
-            cur.execute(query, (county_code,county_code))
+            cur.execute(query, (county_code, county_code))
             result = dictfetchall(cur)
         finally:
             cur.close()
