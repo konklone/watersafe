@@ -20,7 +20,7 @@
 				geocoder = new google.maps.Geocoder();
 				var address = document.getElementById("reqAddress").value;
 				var mapOptions = {
-					zoom : 9,
+					zoom : 10,
 					mapTypeId : google.maps.MapTypeId.ROADMAP
 				}
 				map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
@@ -32,7 +32,8 @@
 						map.setCenter(results[0].geometry.location);
 						var marker = new google.maps.Marker({
 							map : map,
-							position : results[0].geometry.location
+							position : results[0].geometry.location,
+							icon :"https://maps.gstatic.com/mapfiles/ms2/micons/homegardenbusiness.png"
 						});
 					} else {
 						alert("Geocode was not successful for the following reason: " + status);
@@ -190,26 +191,20 @@
 		</script>
 	</head>
 	<body onload="codeAddress()">
+		<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 		<form id="form1" action="/results" method="post">
 			<input type="hidden" id="countyId" name="countyId" value='{{county_id}}' />
 			<input type="hidden" id="reqAddress" name="reqAddress" value='{{req_address}}' />
 			<div class="container">
 				<div class="map-view left">
-					<div class="map-box" id="map-canvas"></div>
-
-					<br />
-
-					<div class="search-on-results">
-						<form action="/results" method="post">
-							{% csrf_token %}
-							<input type="text" name="address" id="address" placeholder="Type in your address..."/>
-							<input type="submit" class="hows-the-water" value="How's My Water?" />
-						</form>
-					</div>
-				</div>
-
-				<div class="detail-view right">
-
+					
 					<div class=" {{ rating_type }} rating">
 						<h1 style="font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif"> {% if bucket == "G" %}
 						GREAT!
@@ -218,7 +213,11 @@
 						{% else %}
 						NEEDS ACTION!
 						{% endif %} </h1>
-						<p>
+						<div id="total">
+						<h4 style="font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif">Your {{county_name}} county has {{ incident_count }} water contamination violations since 2012</h4>
+						
+						</div>
+						<!--<p>
 							<h4 style="font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif"> {% if bucket == "G" %}
 							Your water is in great shape.
 							{% elif bucket == "Y" %}
@@ -226,13 +225,14 @@
 							{% else %}
 							You may want to learn more before drinking your water.
 							{% endif %} </h4>
-						</p>
+						</p> -->
+						
 
-						<br />
 						<div class="sharing">
 							<div>
 								<input type="button" class="{{rating_button}}" id="tweetBtn" value="{{twtButton}}">
-								<input type="button" class="green-button" id="fbBtn" value="Tell Others to Check">
+								<!--<input type="button" class="green-button" id="fbBtn" value="Tell Others to Check"> -->
+								<br><br><div class="fb-share-button" data-href="{{short_url}})" data-type="button_count"></div>
 							</div>
 						</div>
 
@@ -249,10 +249,25 @@
 						<br class="clear-right" />
 					</div>
 
-					<div id="total">
-						<h3 style="font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif">{{ incident_count }} Water Contamination Violations in {{county_name}} county since 2012</h3>
-						<br />
+					<br />
+
+					<div class="search-on-results">
+						<form action="/results" method="post">
+							{% csrf_token %}
+							<input type="text" name="address" id="address" placeholder="Type in your address..."/>
+							<input type="submit" class="hows-the-water" value="How's My Water?" />
+						</form>
 					</div>
+				</div>
+				
+				<div class="map-view left">
+					<div class="map-box" id="map-canvas"></div>
+				</div>
+				
+				<div class="detail-view right">
+					
+					<br />
+					
 					<div style="width: 800px" >
 						<ul class="nav nav-tabs">
 							<li class="active">

@@ -42,6 +42,7 @@ body {
 
 .map-view .map-box {
 	height: 250px;
+	width: 800px;
 	padding: 10px;
 	border:1px solid #ddd;
 }
@@ -69,9 +70,9 @@ body {
 }
 
 .rating {
-	padding: 20px;
-	width: 620px;
-	height: 200px
+	padding: 5px;
+	width: 320px;
+	height: 200px;
 }
 
 .rating hr {
@@ -258,7 +259,7 @@ a:hover {
    box-shadow: rgba(0,0,0,1) 0 1px 0;
    text-shadow: rgba(0,0,0,.4) 0 1px 0;
    color: white;
-   font-size: 13px;
+   font-size: 12px;
    font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif;
    text-decoration: none;
    vertical-align: middle;
@@ -290,7 +291,7 @@ a:hover {
    box-shadow: rgba(0,0,0,1) 0 1px 0;
    text-shadow: rgba(0,0,0,.4) 0 1px 0;
    color: white;
-   font-size: 13px;
+   font-size: 12px;
    font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif;
    text-decoration: none;
    vertical-align: middle;
@@ -322,7 +323,7 @@ a:hover {
    box-shadow: rgba(0,0,0,1) 0 1px 0;
    text-shadow: rgba(0,0,0,.4) 0 1px 0;
    color: white;
-   font-size: 13px;
+   font-size: 12px;
    font-family: 'Lucida Grande', Helvetica, Arial, Sans-Serif;
    text-decoration: none;
    vertical-align: middle;
