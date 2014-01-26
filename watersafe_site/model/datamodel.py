@@ -190,7 +190,67 @@ def get_pws_details_for_map(county_code):
             cur.close()
         return result
     
-    
+def get_county_scorecard_data(county_code):
+    query = """
+      select county_total_pws, COUNTY_PWS_VIOLATIONS, county_population, county_impacted_population
+      from county_scorecard 
+      WHERE fips_county_id = %s
+    """
+    cur = connection.cursor()
+    try:
+        cur.execute(query, county_code)
+        result = getListOfTuples(cur)
+    finally:
+        cur.close()
+    return result    
+
+def get_county_top_contaminants(county_code):
+    query = """
+      select viol_contam_1.cname  , CE.`Health_Effect`
+      from CONTAMINANT_EFFECTS CE, 
+      (select vch.cname, sum( vch.`VIOLATION_COUNT`) violation_count
+      from VIOLATION_CONTAMINANTS_HISTORICAL vch
+      where vch.`COUNTYID` = %s and year(vch.`YYYY_MM`) > year(curdate()) - 3
+      group by vch.cname) viol_contam_1 left outer join 
+      (select vch.cname, sum( vch.`VIOLATION_COUNT` ) violation_count
+      from VIOLATION_CONTAMINANTS_HISTORICAL vch
+      where vch.`COUNTYID` = %s
+      and year(vch.`YYYY_MM`) > year(curdate()) - 3
+      group by vch.cname
+      ) viol_contam_2
+      on viol_contam_1.violation_count < viol_contam_2.violation_count
+      where viol_contam_1.cname = CE.`Contaminant`
+      and viol_contam_2.cname is null
+      order by 1
+    """
+    cur = connection.cursor()
+    try:
+        cur.execute(query, (county_code, county_code))
+        result = getListOfTuples(cur)
+    finally:
+        cur.close()
+    return result 
+
+def get_county_repeat_contaminants(county_code):
+    query = """
+      select repeat_contaminant.cname, CE.`Health_Effect`
+      from (select vch.cname
+      from VIOLATION_CONTAMINANTS_HISTORICAL vch
+      where vch.`COUNTYID` = %s
+      and year(vch.`YYYY_MM`) > year(curdate()) - 4
+      group by vch.cname
+      having count(vch.`YYYY_MM`) = 3) 
+      repeat_contaminant, CONTAMINANT_EFFECTS CE
+      where repeat_contaminant.cname = CE.`Contaminant`
+      order by 1
+    """
+    cur = connection.cursor()
+    try:
+        cur.execute(query, county_code)
+        result = getListOfTuples(cur)
+    finally:
+        cur.close()
+    return result
 
 def get_rep_details():
     rep_twitter_id = ''
@@ -201,7 +261,7 @@ def get_rep_details():
     count = rep_details['count']
     if rep_details['count'] == 0:
         print "No representative details found!!"
-    print rep_details
+    #print rep_details
     if count > 0:
         for rep in rep_details['results']:
             if 'Rep' in rep['title'] and 'twitter_id' in rep :

@@ -240,7 +240,9 @@
 
 						<div class="sharing">
 							<div>
-								<input type="button" class="{{rating_button}}" id="tweetBtn" value="{{twtButton}}">
+								{% if rep_twitter_id != "" %}
+									<input type="button" class="{{rating_button}}" id="tweetBtn" value="{{twtButton}}">
+								{% endif %}
 								<!--<input type="button" class="green-button" id="fbBtn" value="Tell Others to Check"> -->
 								<br><br><div class="fb-share-button" data-href="{{short_url}})" data-type="button_count"></div>
 							</div>
@@ -268,10 +270,58 @@
 							<input type="submit" class="hows-the-water" value="How's My Water?" />
 						</form>
 					</div>
+					<br>
+					<div class="table-responsive">
+						<table class="table" border="1">
+							<thead style="background-color: gray;">
+								<th colspan="2"><b>{{county_name}} county</b> </th>
+							</thead>
+							<tbody>
+								<tr style="background-color: lightgray;"><td colspan="2"><b>Public Water Systems</b></td> </tr>
+								<tr>
+									<td align="center" colspan="1"><b>Total </b><br> {{scorecard_data.county_total_pws}} </td>
+									<td align="center" colspan="1"><b>With violations</b>  <br> {{scorecard_data.COUNTY_PWS_VIOLATIONS}} </td>
+								</tr>
+								<tr style="background-color: lightgray;"><td colspan="2" ><b>County Population</b></td> </tr>
+								<tr>
+									<td align="center" colspan="1"><b>Served </b><br> {{scorecard_data.county_population}} </td>
+									<td align="center" colspan="1"><b>Impacted</b>  <br> {{scorecard_data.county_impacted_population}} </td>
+								</tr>
+								<tr style="background-color: lightgray;"><td colspan="2"><b>Top Contaminant(s)</b> </td></tr>
+								<tr>
+									<td align="center" colspan="2"> 
+									{% for contaminant in top_contaminant %}
+										<div id="contaminant{{forloop.counter}}" class="chemical" >
+											<span >{{ contaminant.cname }}</span>
+										</div>
+										<div id="{{ contaminant.contaminant }}" style="display: none" >
+											{{ contaminant.Health_Effect }}
+										</div>
+									{% endfor %}	
+									</td>
+								</tr>
+								<tr style="background-color: lightgray;"><td colspan="2"><b> Repeat contaminant(s) </b> </td></tr>
+								<tr>
+									<td align="center" colspan="2">
+									{% for contaminant in repeat_contaminant %}
+										<div id="contaminant{{forloop.counter}}" class="chemical" >
+											<span >{{ contaminant.cname }}</span>
+										</div>
+										<div id="{{ contaminant.contaminant }}" style="display: none" >
+											{{ contaminant.Health_Effect }}
+										</div>
+									{% endfor %}	
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						
+					</div>
 				</div>
 				
 				<div class="map-view left">
 					<div class="map-box" id="map-canvas"></div>
+					<div style="width: 800px; alignment-adjust:right;"> <i>Note: location of water system is based on mailing address and not the actual physical location</i> </div>
 				</div>
 				
 				<div class="detail-view right">

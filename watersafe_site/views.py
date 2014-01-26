@@ -117,7 +117,11 @@ def Search(request):
   pws_info = datamodel.get_pws_details_by_county(lat, lng, county_code)
   repId = datamodel.get_rep_details()
   map_data = datamodel.get_pws_details_for_map(county_code)
-  
+  scorecard_data = datamodel.get_county_scorecard_data(county_code)
+  top_contaminants = datamodel.get_county_top_contaminants(county_code)
+  #print top_contaminants 
+  repeat_contaminants = datamodel.get_county_repeat_contaminants(county_code)
+  #print repeat_contaminants
   # Google api for URL shortener
   post_url = 'https://www.googleapis.com/urlshortener/v1/url'
   url = "http://www.h2osafe.us/results?address="+address
@@ -163,7 +167,10 @@ def Search(request):
       'twtButton':twtButton,
       'twtMessage':twtMessage,
       'short_url':short_url,
-      'map_data':map_data
+      'map_data':map_data,
+      'scorecard_data':scorecard_data[0],
+      'top_contaminant':top_contaminants,
+      'repeat_contaminant':repeat_contaminants
   }, context_instance=RequestContext(request))
   
   
