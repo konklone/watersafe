@@ -193,7 +193,7 @@ def get_pws_details_for_map(county_code):
     
 
 def get_rep_details():
-    rep_twitter_id = 'h2osafeus'
+    rep_twitter_id = ''
     url = "http://congress.api.sunlightfoundation.com/legislators/locate?apikey=45994d516b45490c892732ffe65a2a53&latitude={0}&longitude={1}".format(lat, lng)
     #print url
     response = do_GET(url)
@@ -201,10 +201,10 @@ def get_rep_details():
     count = rep_details['count']
     if rep_details['count'] == 0:
         print "No representative details found!!"
-    #print rep_details
+    print rep_details
     if count > 0:
         for rep in rep_details['results']:
-            if 'Rep' in rep['title']:
+            if 'Rep' in rep['title'] and 'twitter_id' in rep :
                 rep_twitter_id = rep['twitter_id']
     return rep_twitter_id
 
