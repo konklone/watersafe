@@ -271,13 +271,15 @@
 						</form>
 					</div>
 					<br>
+					<div class="panel panel-primary">
+				  <!-- Default panel contents -->
+				  <div class="panel-heading">
+				  	<h2 class="panel-title">Scorecard for {{county_name}} county</h2>
+				  	</div>
 					<div class="table-responsive">
-						<table class="table" border="1">
-							<thead style="background-color: gray;">
-								<th colspan="2"><b>{{county_name}} county</b> </th>
-							</thead>
+						<table class="table table-hover" border="0">
 							<tbody>
-								<tr style="background-color: lightgray;"><td colspan="2"><b>Public Water Systems</b></td> </tr>
+								<tr style="background-color: lightgray;"><td colspan="2"><h5 class="panel-title"> Public Water Systems</h5></td> </tr>
 								<tr>
 									<td align="center" colspan="1"><b>Total </b><br> {{scorecard_data.county_total_pws}} </td>
 									<td align="center" colspan="1"><b>With violations</b>  <br> {{scorecard_data.COUNTY_PWS_VIOLATIONS}} </td>
@@ -318,7 +320,7 @@
 						
 					</div>
 				</div>
-				
+				</div>
 				<div class="map-view left">
 					<div class="map-box" id="map-canvas"></div>
 					<div style="width: 800px; alignment-adjust:right;"> <i>Note: location of water system is based on mailing address and not the actual physical location</i> </div>
