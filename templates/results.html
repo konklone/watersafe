@@ -198,6 +198,9 @@
 				}
 
 			});
+			function getPercent(a,b){
+				document.write(Number((b/a)*100).toFixed(2));
+			}
 		</script>
 	</head>
 	<body onload="codeAddress()">
@@ -272,54 +275,90 @@
 					</div>
 					<br>
 					<div class="panel panel-primary">
-				  <!-- Default panel contents -->
-				  <div class="panel-heading">
-				  	<h2 class="panel-title">Scorecard for {{county_name}} county</h2>
-				  	</div>
-					<div class="table-responsive">
-						<table class="table table-hover" border="0">
-							<tbody>
-								<tr style="background-color: lightgray;"><td colspan="2"><h5 class="panel-title"> Public Water Systems</h5></td> </tr>
-								<tr>
-									<td align="center" colspan="1"><b>Total </b><br> {{scorecard_data.county_total_pws}} </td>
-									<td align="center" colspan="1"><b>With violations</b>  <br> {{scorecard_data.COUNTY_PWS_VIOLATIONS}} </td>
-								</tr>
-								<tr style="background-color: lightgray;"><td colspan="2" ><b>County Population</b></td> </tr>
-								<tr>
-									<td align="center" colspan="1"><b>Served </b><br> {{scorecard_data.county_population}} </td>
-									<td align="center" colspan="1"><b>Impacted</b>  <br> {{scorecard_data.county_impacted_population}} </td>
-								</tr>
-								<tr style="background-color: lightgray;"><td colspan="2"><b>Top Contaminant(s)</b> </td></tr>
-								<tr>
-									<td align="center" colspan="2"> 
-									{% for contaminant in top_contaminant %}
-										<div id="contaminant{{forloop.counter}}" class="chemical" >
-											<span >{{ contaminant.cname }}</span>
-										</div>
-										<div id="{{ contaminant.contaminant }}" style="display: none" >
-											{{ contaminant.Health_Effect }}
-										</div>
-									{% endfor %}	
-									</td>
-								</tr>
-								<tr style="background-color: lightgray;"><td colspan="2"><b> Repeat contaminant(s) </b> </td></tr>
-								<tr>
-									<td align="center" colspan="2">
-									{% for contaminant in repeat_contaminant %}
-										<div id="contaminant{{forloop.counter}}" class="chemical" >
-											<span >{{ contaminant.cname }}</span>
-										</div>
-										<div id="{{ contaminant.contaminant }}" style="display: none" >
-											{{ contaminant.Health_Effect }}
-										</div>
-									{% endfor %}	
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						
+				  	<!-- Default panel contents -->
+				  		<div class="panel-heading">
+				  			<h2 class="panel-title">{{county_name}} county</h2>
+				  		</div>
+		
+						<div class="table-responsive">
+							<table class="table table-hover" border="0">
+								<tbody>
+									<tr style="background-color:lightblue ;font-size: 14px"><td colspan="2"><b>Public Water Systems</b></td> </tr>
+									<tr style="font-size: 12px">
+										<td colspan="1" width="50%"><b>Total : </b> {{scorecard_data.county_total_pws}} </td>
+										<td colspan="1"><b>Violations :</b>  {{scorecard_data.COUNTY_PWS_VIOLATIONS}} 
+											(<script>getPercent("{{scorecard_data.county_total_pws}}","{{scorecard_data.COUNTY_PWS_VIOLATIONS}}");</script>%)
+										</td>
+									</tr>
+									<tr style="background-color: lightblue;font-size: 14px"><td colspan="2" ><b>County Population</b></td> </tr>
+									<tr>
+										<td colspan="1"><b>Served : </b> {{scorecard_data.county_population}} </td>
+										<td colspan="1"><b>Impacted :</b> {{scorecard_data.county_impacted_population}} 
+											(<script>getPercent("{{scorecard_data.county_population}}","{{scorecard_data.county_impacted_population}}");</script>%)
+										</td>
+									</tr>
+									<tr style="background-color: lightblue;font-size: 14px"><td colspan="2"><b>Top Contaminant(s) - 2013</b> </td></tr>
+									<!--<tr>
+										<td colspan="2" align="center"> 
+										{% for contaminant in top_contaminant %}
+											<div id="contaminant{{forloop.counter}}" class="chemical" >
+												<span >{{ contaminant.cname }}</span>
+											</div>
+											<div id="{{ contaminant.contaminant }}" style="display: none" >
+												{{ contaminant.Health_Effect }}
+											</div>
+										{% endfor %}	
+										</td>
+									</tr> -->
+									<tr>
+										<td colspan="2"> 
+											<ul class="list-group">
+												{% for contaminant in top_contaminant %}
+												<li class="list-group-item">
+													<div id="contaminant{{forloop.counter}}" class="chemical" >
+														<span >{{ contaminant.cname }}</span>
+													</div>
+													<div id="{{ contaminant.contaminant }}" style="display: none" >
+														{{ contaminant.Health_Effect }}
+													</div>
+												</li>
+												{% endfor %}	
+											</ul>
+										</td>
+									</tr>
+									<tr style="background-color: lightblue;font-size: 14px"><td colspan="2"><b> Repeat contaminant(s) - (2011 - '13)</b> </td></tr>
+								<!--	<tr>
+										<td colspan="2" align="center">
+										{% for contaminant in repeat_contaminant %}
+											<div id="contaminant{{forloop.counter}}" class="chemical" >
+												<span >{{ contaminant.cname }}</span>
+											</div>
+											<div id="{{ contaminant.contaminant }}" style="display: none" >
+												{{ contaminant.Health_Effect }}
+											</div>
+										{% endfor %}
+										</td>
+								</tr> -->
+									<tr>
+										<td colspan="2">
+											<ul class="list-group">
+											{% for contaminant in repeat_contaminant %}
+												<li class="list-group-item">
+													<div id="contaminant{{forloop.counter}}" class="chemical" >
+														<span >{{ contaminant.cname }}</span>
+													</div>
+													<div id="{{ contaminant.contaminant }}" style="display: none" >
+														{{ contaminant.Health_Effect }}
+													</div>
+												</li>
+										  	{% endfor %}
+										  	</ul>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
-				</div>
 				</div>
 				<div class="map-view left">
 					<div class="map-box" id="map-canvas"></div>
