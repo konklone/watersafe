@@ -192,8 +192,10 @@ def get_pws_details_for_map(county_code):
     
 def get_county_scorecard_data(county_code):
     query = """
-      select county_total_pws, COUNTY_PWS_VIOLATIONS, FORMAT(CAST(county_population AS UNSIGNED),0) county_population, 
-      FORMAT(CAST(county_impacted_population AS UNSIGNED),0) county_impacted_population
+    select county_total_pws, county_pws_violations , 
+     ROUND(county_pws_violations *100 / county_total_pws,2) percent_pws,
+      FORMAT(CAST(county_population AS UNSIGNED),0) county_population, 
+      FORMAT(CAST(county_impacted_population AS UNSIGNED),0) county_impacted_population, ROUND(county_impacted_population *100 / county_population,2) percent_population
       from county_scorecard 
       WHERE fips_county_id = %s
     """
