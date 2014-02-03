@@ -131,7 +131,6 @@ def Search(request):
   ret = urllib2.urlopen(req).read()
   short_url=json.loads(ret)['id']
   
-  
   logger.info("client ip " + clientip + " - " + address + " - "+county_code)
 
 #   email_id="vsujith@gmail.com"
@@ -171,6 +170,7 @@ def Search(request):
       'scorecard_data':scorecard_data[0],
       'top_contaminant':top_contaminants,
       'repeat_contaminant':repeat_contaminants
+      
   }, context_instance=RequestContext(request))
   
   

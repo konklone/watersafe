@@ -236,7 +236,7 @@ def get_county_top_contaminants(county_code):
 
 def get_county_repeat_contaminants(county_code):
     query = """
-        select repeat_contaminant.cname, CE.Health_Effect , CONCAT(year(curdate()) - 3,' - ', year(curdate()) ) 'Repeat Years'
+        select repeat_contaminant.cname, CE.Health_Effect , CONCAT(year(curdate()) - 3,' - ', year(curdate()) ) 'Repeat_Years'
         from (
         select vch.cname
         from VIOLATION_CONTAMINANTS_HISTORICAL vch
