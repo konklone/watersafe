@@ -206,7 +206,7 @@ def get_county_scorecard_data(county_code):
 
 def get_county_top_contaminants(county_code):
     query = """
-      select viol_contam_1.cname 'Top Contaminant' , CE.Health_Effect 'Health Effect', year(curdate()) - 1 top_c_year
+      select viol_contam_1.cname , CE.Health_Effect , year(curdate()) - 1 top_c_year
       from CONTAMINANT_EFFECTS CE, 
       (select vch.cname, sum( vch.`VIOLATION_COUNT`) violation_count
       from VIOLATION_CONTAMINANTS_HISTORICAL vch
@@ -233,16 +233,16 @@ def get_county_top_contaminants(county_code):
 
 def get_county_repeat_contaminants(county_code):
     query = """
-        select repeat_contaminant.cname 'Repeat Contaminant', CE.Health_Effect 'Health Effect', CONCAT(year(curdate()) - 3,' - ''', DATE_FORMAT(curdate(),'%y') ) 'Repeat Years'
+        select repeat_contaminant.cname, CE.Health_Effect , CONCAT(year(curdate()) - 3,' - ', year(curdate()) ) 'Repeat Years'
         from (
         select vch.cname
         from VIOLATION_CONTAMINANTS_HISTORICAL vch
-        where vch.`COUNTYID` = %s
+        where vch.COUNTYID = %s
         and year(vch.`YYYY_MM`) >= year(curdate()) - 3
         group by vch.cname
         having count(distinct vch.`YYYY_MM`) = 3
         ) repeat_contaminant, CONTAMINANT_EFFECTS CE
-        where repeat_contaminant.cname = CE.`Contaminant`
+        where repeat_contaminant.cname = CE.Contaminant
         order by 1
      """
     cur = connection.cursor()
