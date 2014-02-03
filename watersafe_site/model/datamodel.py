@@ -206,16 +206,16 @@ def get_county_scorecard_data(county_code):
 
 def get_county_top_contaminants(county_code):
     query = """
-      select viol_contam_1.cname  , CE.`Health_Effect`
+      select viol_contam_1.cname 'Top Contaminant' , CE.Health_Effect 'Health Effect', year(curdate()) - 1 top_c_year
       from CONTAMINANT_EFFECTS CE, 
       (select vch.cname, sum( vch.`VIOLATION_COUNT`) violation_count
       from VIOLATION_CONTAMINANTS_HISTORICAL vch
-      where vch.`COUNTYID` = %s and year(vch.`YYYY_MM`) > year(curdate()) - 3
+      where vch.`COUNTYID` = %s and year(vch.`YYYY_MM`) >= year(curdate()) - 1
       group by vch.cname) viol_contam_1 left outer join 
       (select vch.cname, sum( vch.`VIOLATION_COUNT` ) violation_count
       from VIOLATION_CONTAMINANTS_HISTORICAL vch
       where vch.`COUNTYID` = %s
-      and year(vch.`YYYY_MM`) > year(curdate()) - 3
+      and year(vch.`YYYY_MM`) >= year(curdate()) - 1
       group by vch.cname
       ) viol_contam_2
       on viol_contam_1.violation_count < viol_contam_2.violation_count
@@ -233,17 +233,18 @@ def get_county_top_contaminants(county_code):
 
 def get_county_repeat_contaminants(county_code):
     query = """
-      select repeat_contaminant.cname, CE.`Health_Effect`
-      from (select vch.cname
-      from VIOLATION_CONTAMINANTS_HISTORICAL vch
-      where vch.`COUNTYID` = %s
-      and year(vch.`YYYY_MM`) > year(curdate()) - 4
-      group by vch.cname
-      having count(vch.`YYYY_MM`) = 3) 
-      repeat_contaminant, CONTAMINANT_EFFECTS CE
-      where repeat_contaminant.cname = CE.`Contaminant`
-      order by 1
-    """
+        select repeat_contaminant.cname 'Repeat Contaminant', CE.Health_Effect 'Health Effect', CONCAT(year(curdate()) - 3,' - ''', DATE_FORMAT(curdate(),'%y') ) 'Repeat Years'
+        from (
+        select vch.cname
+        from VIOLATION_CONTAMINANTS_HISTORICAL vch
+        where vch.`COUNTYID` = %s
+        and year(vch.`YYYY_MM`) >= year(curdate()) - 3
+        group by vch.cname
+        having count(distinct vch.`YYYY_MM`) = 3
+        ) repeat_contaminant, CONTAMINANT_EFFECTS CE
+        where repeat_contaminant.cname = CE.`Contaminant`
+        order by 1
+     """
     cur = connection.cursor()
     try:
         cur.execute(query, county_code)
