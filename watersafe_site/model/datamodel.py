@@ -196,7 +196,7 @@ def get_county_scorecard_data(county_code):
      ROUND(county_pws_violations *100 / county_total_pws,2) percent_pws,
       FORMAT(CAST(county_population AS UNSIGNED),0) county_population, 
       FORMAT(CAST(county_impacted_population AS UNSIGNED),0) county_impacted_population, ROUND(county_impacted_population *100 / county_population,2) percent_population
-      from county_scorecard 
+      from COUNTY_SCORECARD 
       WHERE fips_county_id = %s
     """
     cur = connection.cursor()
