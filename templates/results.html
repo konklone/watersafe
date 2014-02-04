@@ -277,31 +277,31 @@
 					<div class="panel panel-primary">
 				  	<!-- Default panel contents -->
 				  		<div class="panel-heading">
-				  			<h2 class="panel-title">{{county_name}} county</h2>
+				  			<h2 class="panel-title" align="center">{{county_name}} county</h2>
 				  		</div>
 		
 						<div class="table-responsive">
 							<table class="table table-hover" style="font-family:georgia,times new roman,times,serif;" border="0">
 								<tbody>
-									<tr style="font-size: 15px">
+									<tr style="font-size: 14px">
 										<td colspan="2" width="50%"><b> Rank : </b> {{scorecard_data.county_rank}} in {{scorecard_data.num_counties}} counties </td>
 									</tr>
-									<tr style="background-color:lightblue ;font-size: 16px"><td colspan="2"><b>Public Water Systems</b></td> </tr>
+									<tr style="background-color:lightblue ;font-size: 15px"><td colspan="2"><b>Public Water Systems</b></td> </tr>
 									<tr style="font-size: 14px">
 										<td colspan="1" width="50%"><b>Total : </b> {{scorecard_data.county_total_pws}} </td>
 										<td colspan="1"><b>Violations :</b>  {{scorecard_data.county_pws_violations}} 
 											( {{scorecard_data.percent_pws}}<font size="1px">%</font> )
 										</td>
 									</tr>
-									<tr style="background-color: lightblue;font-size: 16px"><td colspan="2" ><b>County Population</b></td> </tr>
+									<tr style="background-color: lightblue;font-size: 15px"><td colspan="2" ><b>County Population</b></td> </tr>
 									<tr style="font-size: 14px">
 										<td colspan="1"><b>Served : </b> {{scorecard_data.county_population}} </td>
 										<td colspan="1"><b>Impacted :</b> {{scorecard_data.county_impacted_population}} 
-											&nbsp;({{scorecard_data.percent_population}}<font size="1px">%</font> )
+											<br>( {{scorecard_data.percent_population}}<font size="1px">%</font> )
 										</td>
 									</tr>
 									{% if top_contaminant %}
-										<tr style="background-color: lightblue;font-size: 16px"><td colspan="2"><b>Top Contaminants - since {{top_contaminant.0.top_c_year}}</b> </td></tr>
+										<tr style="background-color: lightblue;font-size: 15px"><td colspan="2"><b>Top Contaminants - since {{top_contaminant.0.top_c_year}}</b> </td></tr>
 										<tr style="font-size: 14px">
 											<td colspan="2"> 
 												<ul class="list-group">
@@ -320,7 +320,7 @@
 										</tr>
 									{% endif %}
 									{% if repeat_contaminant %}
-										<tr style="background-color: lightblue;font-size: 16px"><td colspan="2"><b> Repeat Contaminants - ({{repeat_contaminant.0.Repeat_Years}})</b> </td></tr>
+										<tr style="background-color: lightblue;font-size: 15px"><td colspan="2"><b> Repeat Contaminants - ({{repeat_contaminant.0.Repeat_Years}})</b> </td></tr>
 										<tr style="font-size: 14px">
 											<td colspan="2">
 												<ul class="list-group">
