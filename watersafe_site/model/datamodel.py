@@ -199,7 +199,7 @@ def get_county_scorecard_data(county_code):
       VBC.`RANK` county_rank,
       county_count.num_counties
       from COUNTY_SCORECARD CS, VIOLATIONS_BY_COUNTY VBC, (select state, count(distinct fips_county_id) num_counties from ZIP_GEO_INFO GROUP BY state) county_count
-      WHERE cs.fips_county_id = VBC.`COUNTY_ID`
+      WHERE CS.fips_county_id = VBC.`COUNTY_ID`
       AND VBC.`STATE` = county_count.state
       and fips_county_id = %s
     """
