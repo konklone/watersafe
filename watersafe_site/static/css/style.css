@@ -15,15 +15,20 @@ body {
 }
 .panel-heading {
 	padding: 10px 8px;
+	font-family: Georgia, Times, serif;
 }
 .panel-title {
-	font-size: 20px;
+	font-size: 22px;
+	font-family: Georgia, Times, serif;
 }
 .table {
 	margin-bottom: 0px;
 }
 .list-group {
   margin-bottom: 0px;
+}
+.list-group-item {
+	padding: 4px 15px;
 }
 	.logo {
 	text-align: center;
