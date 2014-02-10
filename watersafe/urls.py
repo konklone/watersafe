@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from watersafe_site.views import Search, LearnMore, search_form, SendTweet, \
-    AboutUs, PWSFacts
+    AboutUs, PWSFacts, SearchByCounty
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     # Examples:
     ('^$', search_form),
     ('^results$', Search),
+    ('(?P<county>[A-Za-z]*)/(?P<state>[A-Za-z]{2})/violations$', SearchByCounty),
     ('^sendTweet$', SendTweet),
     ('^aboutus$', AboutUs),
     ('^pwsfacts$', PWSFacts),    

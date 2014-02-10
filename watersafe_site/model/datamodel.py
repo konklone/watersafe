@@ -29,7 +29,6 @@ def get_zip_from_address(address):
     else:
         # get lat/long for address and pass it to get representation details
         location = geocode_info['results'][0]['geometry']['location']
-        global lat, lng 
         lat = location['lat']
         lng = location['lng']
         address_components = geocode_info['results'][0]['address_components']
@@ -260,7 +259,7 @@ def get_county_repeat_contaminants(county_code):
         cur.close()
     return result
 
-def get_rep_details():
+def get_rep_details(lat,lng):
     rep_twitter_id = ''
     url = "http://congress.api.sunlightfoundation.com/legislators/locate?apikey=45994d516b45490c892732ffe65a2a53&latitude={0}&longitude={1}".format(lat, lng)
     #print url
@@ -284,3 +283,34 @@ def logTwitter(repId, address, clientIP):
         transaction.commit()
     finally:
         cur.close()
+
+def get_county_byname(county,state):
+    county_code = ''
+    logger.debug("County Name: " + county +"State :" + state)
+    cur = connection.cursor()
+    try:
+        cur.execute('select distinct fips_county_id from zip_geo_info where county=%s and state=%s',(county,state))
+        result = cur.fetchone()
+        if(result):
+            county_code = result[0]
+    finally:
+        cur.close()
+    return county_code
+
+def get_lat_lng_for_country(county_code):
+    logger.debug("County Id: " + county_code)
+    query = """
+            select zg.zip_code, zg.latitude, zg.longitude from ZIP_GEO_INFO zg left outer join ZIP_GEO_INFO zgm
+            on zg.`fips_county_id` = zgm.`fips_county_id` and zg.`zip_code` > zgm.`zip_code`
+            where zgm.`fips_county_id` is null and length(zg.`fips_county_id`) > 0  and zg.`fips_county_id` = %s 
+            """
+    cur = connection.cursor()
+    try:
+        cur.execute(query,county_code)
+        result = cur.fetchone()
+        zip_code = result[0]
+        lat = result[1]
+        lng = result[2]
+    finally:
+        cur.close()
+    return zip_code,lat,lng

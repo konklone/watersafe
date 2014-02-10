@@ -101,76 +101,90 @@ def SendEmail(request):
     msg.send()
     return HttpResponse(str(0), content_type="text/plain")
 
+def logClientIP(request,address,county_code):
+    clientip = get_client_ip(request)
+    logger.info("client ip " + clientip + " - " + address + " - "+county_code)
+    
 @csrf_exempt
 def Search(request):
-  clientip = get_client_ip(request)
-  if 'address' in request.POST:
-    address = request.POST['address']
-  elif 'address' in request.GET:
-    address = request.GET['address'] 
-  else: 
-    address = "20 N. 3rd St Philadelphia"
+    if 'address' in request.POST:
+        address = request.POST['address']
+    elif 'address' in request.GET:
+        address = request.GET['address'] 
+    else: 
+        address = "20 N. 3rd St Philadelphia"
+    lat, lng, county_code, countyname, state = datamodel.get_county_code_by_address(address)
+    logClientIP(request,address,county_code)
+    logger.info(county_code)
+    return return_county_data(request,county_code,countyname,state,lat,lng,address)
   
-  lat, lng, county_code, countyname, state = datamodel.get_county_code_by_address(address)
-  logger.info(county_code)
-  ranking_info = datamodel.get_ranking_info_by_county(county_code)
-  pws_info = datamodel.get_pws_details_by_county(lat, lng, county_code)
-  repId = datamodel.get_rep_details()
-  map_data = datamodel.get_pws_details_for_map(county_code)
-  scorecard_data = datamodel.get_county_scorecard_data(county_code)
-  top_contaminants = datamodel.get_county_top_contaminants(county_code)
-  #print top_contaminants 
-  repeat_contaminants = datamodel.get_county_repeat_contaminants(county_code)
-  #print repeat_contaminants
-  # Google api for URL shortener
-  post_url = 'https://www.googleapis.com/urlshortener/v1/url'
-  url = "http://www.h2osafe.us/results?address="+address
-  postdata = {'longUrl':url}
-  headers = {'Content-Type':'application/json'}
-  req = urllib2.Request(post_url,json.dumps(postdata),headers)
-  ret = urllib2.urlopen(req).read()
-  short_url=json.loads(ret)['id']
-  
-  logger.info("client ip " + clientip + " - " + address + " - "+county_code)
+@csrf_exempt
+def SearchByCounty(request,county,state):
+    county_code = datamodel.get_county_byname(county, state)
+    if(county_code == ''):
+        county_code= '42101'
+        county = 'Philadelphia'
+        state='PA'
+    address,lat, lng = datamodel.get_lat_lng_for_country(county_code)
+    return return_county_data(request,county_code,county,state,lat,lng,address)
 
-#   email_id="vsujith@gmail.com"
-#   #Get Template
-#   emailTemplate     = get_template('email.html')
-#   data = Context({ 'pws_info': pws_info })
-#   emailContent = emailTemplate.render(data)
-  twtButton = "Contact Rep"
-  twtMessage = "Water safety violations for address"
-  rating_button = "green-button"
-  if ranking_info['bucket'] == "G":
-    rating_type = "green-rating"
-    twtButton = "Thank Your Rep"
-    twtMessage = "Thank You for water safety @"
-  elif ranking_info['bucket'] == "Y":
-    rating_type = "yellow-rating"
-  else: 
-    rating_type = "red-rating"
-
-  return render_to_response('results.html', {
-      'county_id': county_code, 
-      'county_name' :countyname,
-      'state' : state,
-      'address': address,
-      'incident_count': ranking_info['incident_count'],
-      'bucket': ranking_info['bucket'],
-      'rank': ranking_info['rank'],
-      'rating_type': rating_type,
-      'rating_button': rating_button,
-      'pws_info': pws_info,
-      'req_address':address,
-      'rep_twitter_id':repId,
-      'twtButton':twtButton,
-      'twtMessage':twtMessage,
-      'short_url':short_url,
-      'map_data':map_data,
-      'scorecard_data':scorecard_data[0],
-      'top_contaminant':top_contaminants,
-      'repeat_contaminant':repeat_contaminants
-      
-  }, context_instance=RequestContext(request))
-  
-  
+def return_county_data(request,county_code,countyname,state,lat,lng,address):
+    ranking_info = datamodel.get_ranking_info_by_county(county_code)
+    pws_info = datamodel.get_pws_details_by_county(lat, lng, county_code)
+    repId = datamodel.get_rep_details(lat, lng)
+    map_data = datamodel.get_pws_details_for_map(county_code)
+    scorecard_data = datamodel.get_county_scorecard_data(county_code)
+    top_contaminants = datamodel.get_county_top_contaminants(county_code)
+    #print top_contaminants 
+    repeat_contaminants = datamodel.get_county_repeat_contaminants(county_code)
+    #print repeat_contaminants
+    # Google api for URL shortener
+    post_url = 'https://www.googleapis.com/urlshortener/v1/url'
+    if(address != ''):
+        url = "http://www.h2osafe.us/results?address="+address
+    else:
+        url = "http://www.h2osafe.us/"+countyname+"/"+state+"/violations"
+    postdata = {'longUrl':url}
+    headers = {'Content-Type':'application/json'}
+    req = urllib2.Request(post_url,json.dumps(postdata),headers)
+    ret = urllib2.urlopen(req).read()
+    short_url=json.loads(ret)['id']
+    
+    #   #Get Template
+    #   emailTemplate     = get_template('email.html')
+    #   data = Context({ 'pws_info': pws_info })
+    #   emailContent = emailTemplate.render(data)
+    twtButton = "Contact Rep"
+    twtMessage = "Water safety violations for address"
+    rating_button = "green-button"
+    if ranking_info['bucket'] == "G":
+        rating_type = "green-rating"
+        twtButton = "Thank Your Rep"
+        twtMessage = "Thank You for water safety @"
+    elif ranking_info['bucket'] == "Y":
+        rating_type = "yellow-rating"
+    else: 
+        rating_type = "red-rating"
+    
+    return render_to_response('results.html', {
+        'county_id': county_code, 
+        'county_name' :countyname,
+        'state' : state,
+        'address': address,
+        'incident_count': ranking_info['incident_count'],
+        'bucket': ranking_info['bucket'],
+        'rank': ranking_info['rank'],
+        'rating_type': rating_type,
+        'rating_button': rating_button,
+        'pws_info': pws_info,
+        'req_address':address,
+        'rep_twitter_id':repId,
+        'twtButton':twtButton,
+        'twtMessage':twtMessage,
+        'short_url':short_url,
+        'map_data':map_data,
+        'scorecard_data':scorecard_data[0],
+        'top_contaminant':top_contaminants,
+        'repeat_contaminant':repeat_contaminants
+    }, context_instance=RequestContext(request))
+    
