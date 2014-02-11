@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     # Examples:
     ('^$', search_form),
     ('^results$', Search),
-    ('(?P<county>[A-Za-z]*)/(?P<state>[A-Za-z]{2})/violations$', SearchByCounty),
+    ('(?P<county>[A-Za-z ]*)/(?P<state>[A-Za-z]{2})/violations$', SearchByCounty),
     ('^sendTweet$', SendTweet),
     ('^aboutus$', AboutUs),
     ('^pwsfacts$', PWSFacts),    
