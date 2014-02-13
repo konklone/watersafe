@@ -261,7 +261,7 @@ def get_county_repeat_contaminants(county_code):
 
 def get_rep_details(lat,lng):
     rep_twitter_id = ''
-    url = "http://congress.api.sunlightfoundation.com/legislators/locate?apikey=45994d516b45490c892732ffe65a2a53&latitude={0}&longitude={1}".format(lat, lng)
+    url = "https://congress.api.sunlightfoundation.com/legislators/locate?apikey=45994d516b45490c892732ffe65a2a53&latitude={0}&longitude={1}".format(lat, lng)
     #print url
     response = do_GET(url)
     rep_details = json.loads(response)
